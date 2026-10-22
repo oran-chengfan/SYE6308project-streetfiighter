@@ -37,7 +37,6 @@
 | 位置 | 用途 |
 |---|---|
 | `AGENTS.md` | 两端 Codex 的强制规则 |
-| `prompts/windows_initial_prompt_1022.md` | 可直接贴给 Windows Codex 的首个任务 |
 | `notebooks/working/counter_ryu_windows.ipynb` | 薄 notebook：调用检查、评估、录像和可选短训练入口 |
 | `notebooks/upstream/` | 两份课程原版 notebook，只读参考 |
 | `scripts/check_environment.py` | 环境和硬件信息，不计算文件摘要 |
@@ -57,7 +56,8 @@
 | `reports/migration_1022/` | 经过筛选的历史逐局结果、反事实和消融证据 |
 | `course/` | `Project_List_2026.pdf` 和 `Championship_notes.pdf` |
 | `dqn_papers/`、`general_papers/` | 相关论文，阅读顺序见第 9 节 |
-| `artifacts/`、`local/` | 本机运行输出与本地 ROM 等，不进入 Git |
+| `local/StreetFighterIISpecialChampionEdition-Genesis.md` | 用户要求通过 Git 传输的课程原始 ROM，按二进制管理 |
+| `artifacts/`、其他 `local/` 文件 | 本机运行输出和其他本地文件，不进入 Git |
 
 为减小迁移体积，去掉了旧环境、旧 runtime、大部分失败权重/数据集、缓存、录像和大量一次性脚本。运行模块改为相对仓库路径；规则对手只提取了原来的 `choose` 函数，避免再导入旧框架。**这是代码与基线的最小交接，不是所有旧实验的完整训练快照。**
 
@@ -73,7 +73,7 @@
 
 MSYS2 提供 Windows 上的构建工具，不能直接把它自带的 Python 当作已经装好 PyTorch 的 Conda Python。[MSYS2 官方说明](https://www.msys2.org/docs/python/)明确指出其 Python 的 C 扩展与普通 Windows CPython 不兼容；[UCRT64](https://www.msys2.org/docs/environments/) 是其当前推荐环境。因此，只将 GNU 工具链用于构建，目标保持现有 `sye6308` 的 Windows Python 3.12。第一阶段门槛是扩展能在该环境中加载，而不是在另一个 Python 中能 import。不能切换到 MSYS2 Python 并重装整套依赖来绕过这个门槛。
 
-只有扩展加载成功，才继续检查 Genesis 核心、ROM、9 个开局恢复和完整 24+8 局基线。45 分钟内未打通就保存精确阻碍，不接着改第三方核心或重写打包系统；WSL2 仍只是待用户决定的备选。具体指令见现有 Windows prompt，不新增一套 trainer 或重复运行入口。
+只有扩展加载成功，才继续检查 Genesis 核心、ROM、9 个开局恢复和完整 24+8 局基线。45 分钟内未打通就保存精确阻碍，不接着改第三方核心或重写打包系统；WSL2 仍只是待用户决定的备选。最新具体指令由用户在聊天中转交，不保存到仓库，不新增一套 trainer 或重复运行入口。
 
 ### WSL2 安装资料（仅在用户以后明确选择后执行）
 
@@ -111,7 +111,7 @@ export MKL_NUM_THREADS=1
 
 ## 5. ROM 与最初的三项检查
 
-游戏 ROM 没有上传。将 Mac 上已有的、课程匹配的原始文件复制到 Windows 仓库的 `local/StreetFighterIISpecialChampionEdition-Genesis.md`；如以后采用 WSL2，再确保该文件能被 Linux 环境读取。Mac 原文件是原工作目录下 `runtime/mac_ppo/resources/StreetFighterIISpecialChampionEdition-Genesis.md`，并已在 Mac 的 `github_sync/local/` 准备一份便于传输的副本，大小为 3,145,728 字节。`local/` 被 Git 忽略，**文件并未通过 GitHub 传到 Windows**，需用两台设备之间已有的文件传输方式复制。模拟器构建和 ROM 缺失是两个独立阻碍。**这是游戏二进制，虽然后缀是 `.md`，不是 Markdown 文档；不要转换内容或行尾。** `.state`、zip 和其他游戏版本不能代替。
+用户现已明确要求通过 Git 传输 ROM。课程匹配的原始文件已加入 `local/StreetFighterIISpecialChampionEdition-Genesis.md`，Windows 拉取最新主干后即可取得，大小为 3,145,728 字节，无需另行传文件。`.gitignore` 只放行这一份 ROM，其余本地文件继续忽略；`.gitattributes` 将该精确路径设为二进制并禁用行尾转换。Mac 源文件仍是原工作目录下 `runtime/mac_ppo/resources/StreetFighterIISpecialChampionEdition-Genesis.md`。**这是游戏二进制，虽然后缀是 `.md`，不是 Markdown 文档；不要编辑、转换内容或行尾。** `.state`、zip 和其他游戏版本不能代替。原生构建仍需独立完成，不能因文件已拉取就宣称模拟器已能运行。
 
 先做无需 ROM 的检查：
 
@@ -229,7 +229,7 @@ git pull --ff-only
 git switch -c win/baseline-reproduction
 ```
 
-完成后只选择必要文件加入 Git，例如源码变更和一个小型汇总。不要 `git add -f artifacts/`，不要把训练全部权重/视频上传；必要录像先本地分析，再按需分享。不要提交 token、环境或 ROM。使用：
+完成后只选择必要文件加入 Git，例如源码变更和一个小型汇总。不要 `git add -f artifacts/`，不要把训练全部权重/视频上传；必要录像先本地分析，再按需分享。不要提交 token、环境或其他 ROM；课程匹配的单一 ROM 已由用户要求纳入版本管理。使用：
 
 ```bash
 git add scripts/check_environment.py reports/windows_baseline_1022/summary.json
@@ -237,6 +237,6 @@ git commit -m "Record Windows baseline reproduction and environment"
 git push -u origin win/baseline-reproduction
 ```
 
-上面的文件名是示例，只加入实际存在且本次需要的文件。Mac 用 `git fetch origin`、切换对应远程分支进行审核；需要反馈时在 `review/<task>` 分支提交对现有 prompt/配置的修订。初期由 Mac 审核后合并主干，Windows 再拉取，避免两个会话同时改同一分支。这里不要求创建大量 PR、Issue 或 Markdown。
+上面的文件名是示例，只加入实际存在且本次需要的文件。Mac 用 `git fetch origin`、切换对应远程分支进行审核；代码、配置和说明修订可以在 `review/<task>` 分支提交。操作 prompt 由 Mac 在聊天中直接交付，用户转交 Windows，不保存在 Git，不重建 prompt 文件夹。初期由 Mac 审核后合并主干，Windows 再拉取，避免两个会话同时改同一分支。这里不要求创建大量 PR、Issue 或 Markdown。
 
 Windows 首次交付应包括：系统/依赖与设备、80 输入检查、9 开局恢复检查、32 场基线逐局差异、代码流程解释和下一步单一假设。遇到差异先修环境/接口，不用加训练掩盖；没有差异再讨论如何改善策略。**不要把“安装成功”或“短训跑完”汇报成模型目标已完成。**

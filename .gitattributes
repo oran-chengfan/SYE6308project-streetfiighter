@@ -6,3 +6,5 @@
 *.pdf binary
 *.pt binary
 *.npz binary
+# The course ROM has a .md suffix but must never receive Markdown/text conversion.
+local/StreetFighterIISpecialChampionEdition-Genesis.md binary -eol

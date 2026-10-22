@@ -14,7 +14,8 @@ Thumbs.db
 .idea/
 artifacts/
 runtime/
-local/
+local/*
+!local/StreetFighterIISpecialChampionEdition-Genesis.md
 *.log
 *.writing
 

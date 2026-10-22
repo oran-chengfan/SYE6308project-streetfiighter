@@ -21,7 +21,7 @@
 
 ## 实验和交接
 
-先读 `initial_readme_1022.md`，再读 `prompts/windows_initial_prompt_1022.md`。初次接手先完成环境、固定输入推理、模拟器恢复、完整基线复现与代码审计；不要自动续跑过去失败的 Q/高层 PPO 分支或启动数小时训练。
+先读 `initial_readme_1022.md`，本轮具体任务使用用户从聊天转交的 prompt。Prompt 直接在聊天中交付，不写入仓库，不重建 `prompts/` 文件夹。初次接手先完成环境、固定输入推理、模拟器恢复、完整基线复现与代码审计；不要自动续跑过去失败的 Q/高层 PPO 分支或启动数小时训练。
 
 当前 Windows 恢复任务不安装 WSL2/Ubuntu、不改系统组件、不自动重启。原生 GNU 工具链检查按现有 prompt 限时进行，目标保持当前 Conda Windows Python，不能切换 MSYS2 Python 后冒称原环境已经打通。Windows 转发报告与 Mac 已从 Git 审核的证据要分开记录。
 
@@ -31,6 +31,6 @@
 
 Windows 负责运行、训练与实验；Mac 负责审核、分析和下一轮 prompt。Windows 在 `win/<简短任务名>` 分支提交，Mac 在 `review/<简短任务名>` 分支审核，使用普通 Git 提交/push 同步，不强推。一次只做一个清楚的实验，不两边同时改同一主干。
 
-Git 仅提交源码、配置、必要模型和简洁结果。`artifacts/`、ROM、环境、回放缓存和大量视频均不入库。结果默认一个实验一个目录，一个 `summary.json` 和必要的逐局记录；不自动新建一堆 Markdown。被 Mac 复核选中的小结果再整理进 `reports/`。
+Git 用于两端文件传输，提交源码、配置、必要模型、简洁结果，以及用户明确要求上传的课程 ROM：`local/StreetFighterIISpecialChampionEdition-Genesis.md`。该文件已按二进制管理，禁止任何文本/行尾转换；不要扩展上传其他 ROM。`artifacts/`、环境、回放缓存、大量视频和其他本地文件仍不入库。结果默认一个实验一个目录，一个 `summary.json` 和必要的逐局记录；不自动新建一堆 Markdown。被 Mac 复核选中的小结果再整理进 `reports/`。
 
 中文解释使用连贯段落，说明做了什么、为何这样做、证据和边界。不要把猜测写成已证实结论，不要声称目标完成，除非完整对局和行为验证都支持。
