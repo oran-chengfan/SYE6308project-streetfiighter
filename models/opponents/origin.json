@@ -1,0 +1,5 @@
+{
+  "strong_response.pt": "Inference weights from the frozen response trained against retained Counter-Ryu, historical checkpoint 32768; same opponent used by the fixed focus suite.",
+  "counter_current.pt": "Inference weights from the earlier learned Ryu counter, historical checkpoint 65536; training pool only.",
+  "scope": "Two selected opponents for the minimal transfer. Their optimizers and large replay datasets are omitted."
+}

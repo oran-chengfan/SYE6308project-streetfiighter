@@ -1,0 +1,35 @@
+{
+  "date_hong_kong": "2026-10-22",
+  "execution_platform": "Mac CPU; not a Windows test",
+  "inference": {
+    "observations": 80,
+    "action_differences": 0,
+    "probability_max_absolute_error": 0.0,
+    "value_max_absolute_error": 0.0
+  },
+  "native": {
+    "cases": 9,
+    "all_start_restore_replays_equal": true
+  },
+  "independent_sb3_export": {
+    "observations": 80,
+    "greedy_actions_equal": true,
+    "max_action_probability_error": 0.0,
+    "max_value_error": 0.0
+  },
+  "training_entry_smoke": {
+    "steps": 768,
+    "native_frames": 4614,
+    "saved_initial_and_final": true,
+    "parameters_updated": true,
+    "scope": "One small functional run, not strength/adaptiveness evidence."
+  },
+  "curated_opponents": {
+    "models": 2,
+    "observations_each": 80,
+    "action_differences": 0
+  },
+  "windows_validation": "PENDING: follow the initial prompt on the Windows/WSL machine.",
+  "official_arena_validation": "Not run; course packaging and identity-calculation utilities remain excluded.",
+  "reference_promoted": false
+}

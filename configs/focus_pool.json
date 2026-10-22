@@ -1,0 +1,103 @@
+[
+  {
+    "id": "strong_response",
+    "kind": "agent",
+    "path": "models/opponents/strong_response.pt"
+  },
+  {
+    "id": "heldout_fireball_timing",
+    "kind": "rule",
+    "style": "fireball",
+    "period": 23,
+    "phase": 7,
+    "evaluation_split": "development"
+  },
+  {
+    "id": "tactical_zone_guard",
+    "kind": "tactical",
+    "style": "zone_guard",
+    "period": 12,
+    "phase": 0,
+    "evaluation_split": "development"
+  },
+  {
+    "id": "tactical_bait_counter",
+    "kind": "tactical",
+    "style": "bait_counter",
+    "period": 12,
+    "phase": 0,
+    "evaluation_split": "development"
+  },
+  {
+    "id": "tactical_walk_guard",
+    "kind": "tactical",
+    "style": "walk_guard",
+    "period": 12,
+    "phase": 0,
+    "evaluation_split": "development"
+  },
+  {
+    "id": "switching_zone_rush_guard",
+    "kind": "tactical",
+    "style": "switching",
+    "styles": [
+      "zone_guard",
+      "advance_kick",
+      "walk_guard"
+    ],
+    "switch_every": 61,
+    "period": 19,
+    "phase": 7,
+    "close": 71,
+    "far": 137,
+    "evaluation_split": "known_regression"
+  },
+  {
+    "id": "CPU_Ryu_1",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 1
+  },
+  {
+    "id": "CPU_Ryu_2",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 2
+  },
+  {
+    "id": "CPU_Ryu_3",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 3
+  },
+  {
+    "id": "CPU_Ryu_4",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 4
+  },
+  {
+    "id": "CPU_Ryu_5",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 5
+  },
+  {
+    "id": "CPU_Ryu_6",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 6
+  },
+  {
+    "id": "CPU_Ryu_7",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 7
+  },
+  {
+    "id": "CPU_Ryu_8",
+    "kind": "cpu",
+    "character": "Ryu",
+    "stars": 8
+  }
+]
