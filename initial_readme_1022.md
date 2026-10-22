@@ -30,6 +30,8 @@
 
 最终 Arena 仍使用课程接口；本包的本地对局和原始权重导出不等于官方 Arena 自检。没有绕过禁令完成官方打包验收，也不要冒称完成。
 
+课程方最新书面回复已由用户提供：学生代码允许修改，算法可以使用 PPO 以外的方法；模板的训练、打包和加载包含 PPO 专用检查，换算法时需一并适配，并在课程提供的 Arena 中验证最终提交包。算法许可与模板兼容性应分开讨论，不能把 PPO 默认实现解释成课程只允许 PPO。最终比赛形式按课程正式说明确认，本地四种覆盖条件不代表最终赛制已经确定。上述许可不取消本项目禁止文件哈希的要求；官方最终包验收仍是未完成事项。
+
 ## 3. 文件地图：先看入口，不要遍历所有历史尝试
 
 | 位置 | 用途 |
@@ -59,17 +61,31 @@
 
 为减小迁移体积，去掉了旧环境、旧 runtime、大部分失败权重/数据集、缓存、录像和大量一次性脚本。运行模块改为相对仓库路径；规则对手只提取了原来的 `choose` 函数，避免再导入旧框架。**这是代码与基线的最小交接，不是所有旧实验的完整训练快照。**
 
-## 4. Windows 环境：建议先用 WSL2
+## 4. Windows 环境：当前先核查原生构建，WSL2 保留为备选
 
-推荐 Windows 11 + WSL2 Ubuntu 24.04，在 Linux 文件系统中克隆仓库，使用 Python 3.12。Windows 原生 Python 可以单独探索，但本次没有在 Windows 实机验证；不要把 notebook 相同理解成模拟器二进制和路径无需安装。Stable-Retro 官方文档提供了 [Windows WSL2 运行说明](https://stable-retro.farama.org/linux_installation/)；本项目优先沿这条已有路径恢复环境，避免先陷入原生编译。
+### 当前 Windows 报告与下一步
 
-如果尚未安装 WSL，在**管理员 PowerShell**执行，然后根据提示重启并初始化 Ubuntu 用户：
+用户转发的 Windows 诊断报告称：现有 `sye6308` 中除模拟器外的依赖已安装；80 个固定输入和逐次推理检查通过，动作差异为 0。此结果支持模型在这些观察上的迁移一致性，完整对局尚未验证。Windows 的原始日志和 `summary.json` 尚未提交 Git，本段是对转发报告的记录，不是 Mac 已读取原始日志的审核结论。
+
+首次构建错误是 `CMAKE_MAKE_PROGRAM is not set`，即找不到配套 Make 程序，不能据此声称 CMake 不支持 Unix Makefiles 生成器。后续报告还发现 MSVC 拒绝 GCC 风格的 `-Wextra`，以及核心/LuaJIT 子项目继续依赖 GNU Make。固定版 [CMake 源码](https://github.com/Farama-Foundation/stable-retro/blob/v1.0.1/CMakeLists.txt) 中确有这两类依赖；仅把主生成器换成 Ninja 不能解决整个构建。当前停止继续修 MSVC 路线。
+
+**当前不安装 WSL2/Ubuntu，不修改系统组件，不自动重启。** 下一步先把现有 Windows 报告提交到任务分支，然后给 Windows 原生 GNU 工具链一次最多 45 分钟的可行性验证。优先核查现有工具，确需增加时仅使用当前用户目录下的隔离工具与会话环境变量，不改全局 PATH；需要管理员权限或系统组件时停止并报告。
+
+MSYS2 提供 Windows 上的构建工具，不能直接把它自带的 Python 当作已经装好 PyTorch 的 Conda Python。[MSYS2 官方说明](https://www.msys2.org/docs/python/)明确指出其 Python 的 C 扩展与普通 Windows CPython 不兼容；[UCRT64](https://www.msys2.org/docs/environments/) 是其当前推荐环境。因此，只将 GNU 工具链用于构建，目标保持现有 `sye6308` 的 Windows Python 3.12。第一阶段门槛是扩展能在该环境中加载，而不是在另一个 Python 中能 import。不能切换到 MSYS2 Python 并重装整套依赖来绕过这个门槛。
+
+只有扩展加载成功，才继续检查 Genesis 核心、ROM、9 个开局恢复和完整 24+8 局基线。45 分钟内未打通就保存精确阻碍，不接着改第三方核心或重写打包系统；WSL2 仍只是待用户决定的备选。具体指令见现有 Windows prompt，不新增一套 trainer 或重复运行入口。
+
+### WSL2 安装资料（仅在用户以后明确选择后执行）
+
+Stable-Retro 官方文档提供 [Windows WSL2 运行说明](https://stable-retro.farama.org/linux_installation/)。采用这条备选时，使用 WSL2 Ubuntu 24.04、Python 3.12，并在 Linux 文件系统中克隆仓库。以下是备选资料，**不是现在的执行指令**。安装需用户明确授权；不得自动重启。
+
+用户授权后，如尚未安装 WSL，可在**管理员 PowerShell**执行，再由用户决定重启与初始化 Ubuntu 的时间：
 
 ```powershell
 wsl --install -d Ubuntu-24.04
 ```
 
-接下来全部在 **Ubuntu/WSL 终端**执行，不要把 Linux 命令贴进 PowerShell。GitHub 私有仓库需要该 Windows/WSL 会话已有的正常 Git 登录权限，不要把 token、密码或 SSH 私钥发到聊天或提交仓库。
+仅对采用 WSL2 的路线，接下来全部在 **Ubuntu/WSL 终端**执行，不要把 Linux 命令贴进 PowerShell。GitHub 私有仓库需要该 Windows/WSL 会话已有的正常 Git 登录权限，不要把 token、密码或 SSH 私钥发到聊天或提交仓库。
 
 ```bash
 sudo apt update
@@ -95,7 +111,7 @@ export MKL_NUM_THREADS=1
 
 ## 5. ROM 与最初的三项检查
 
-游戏 ROM 没有上传。将 Mac 上已有的、课程匹配的原始文件复制到 Windows 本地，再放进 WSL 可读位置，例如 `local/StreetFighterIISpecialChampionEdition-Genesis.md`。Mac 原文件是工作目录下 `runtime/mac_ppo/resources/StreetFighterIISpecialChampionEdition-Genesis.md`，大小为 3,145,728 字节。**这是游戏二进制，虽然后缀是 `.md`，不是 Markdown 文档；不要转换内容或行尾。** `.state`、zip 和其他游戏版本不能代替。
+游戏 ROM 没有上传。将 Mac 上已有的、课程匹配的原始文件复制到 Windows 仓库的 `local/StreetFighterIISpecialChampionEdition-Genesis.md`；如以后采用 WSL2，再确保该文件能被 Linux 环境读取。Mac 原文件是原工作目录下 `runtime/mac_ppo/resources/StreetFighterIISpecialChampionEdition-Genesis.md`，并已在 Mac 的 `github_sync/local/` 准备一份便于传输的副本，大小为 3,145,728 字节。`local/` 被 Git 忽略，**文件并未通过 GitHub 传到 Windows**，需用两台设备之间已有的文件传输方式复制。模拟器构建和 ROM 缺失是两个独立阻碍。**这是游戏二进制，虽然后缀是 `.md`，不是 Markdown 文档；不要转换内容或行尾。** `.state`、zip 和其他游戏版本不能代替。
 
 先做无需 ROM 的检查：
 
@@ -202,6 +218,8 @@ python -m scripts.train_reference_ppo --steps 3072 --max-seconds 180 --out artif
 ## 10. GitHub 两端怎样协作
 
 Mac 的同步工作副本为原工作目录下的 `github_sync/`；大实验目录仍留在 Mac，不是仓库的一部分。Windows 克隆自己的副本，运行结果留在各自 `artifacts/`。**两端共享的是代码、配置、精选结果和明确任务，不是整个工作盘。**
+
+先用 `git status` 确认当前目录是 Git 工作副本。目录名带 `-main` 可能来自下载 ZIP，但不能仅凭目录名判断。若当前确是 ZIP 解压目录，应在旁边正常克隆仓库，再复制本机报告和必要修改；不要覆盖原诊断目录，也不要初始化一个无共同历史的仓库强推主干。
 
 Windows 开始一个任务前拉取主干、创建分支：
 
