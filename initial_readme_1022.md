@@ -61,23 +61,33 @@
 
 为减小迁移体积，去掉了旧环境、旧 runtime、大部分失败权重/数据集、缓存、录像和大量一次性脚本。运行模块改为相对仓库路径；规则对手只提取了原来的 `choose` 函数，避免再导入旧框架。**这是代码与基线的最小交接，不是所有旧实验的完整训练快照。**
 
-## 4. Windows 环境：当前先核查原生构建，WSL2 保留为备选
+## 4. Windows 原生环境已完成基线复现
 
-### 当前 Windows 报告与下一步
+### Windows 实测与 Mac 审核结果
 
-用户转发的 Windows 诊断报告称：现有 `sye6308` 中除模拟器外的依赖已安装；80 个固定输入和逐次推理检查通过，动作差异为 0。此结果支持模型在这些观察上的迁移一致性，完整对局尚未验证。Windows 的原始日志和 `summary.json` 尚未提交 Git，本段是对转发报告的记录，不是 Mac 已读取原始日志的审核结论。
+Windows 的 `win/baseline-reproduction` 已提交 [汇总报告](reports/windows_baseline_1022/summary.json)、[逐局记录](reports/windows_baseline_1022/episodes.json)和[最小构建补丁](patches/stable-retro-1.0.1-windows.patch)。Mac 已读取这些文件，独立比较 32 局的对手、类型、端口、offset、胜负、双方血量、结束原因和原生帧数共九项字段，全部一致；条件无重复或缺失，逐局帧数合计 60,141。审核通过，记录于同一汇总报告的 `mac_review`，没有新建另一份 Markdown。
 
-首次构建错误是 `CMAKE_MAKE_PROGRAM is not set`，即找不到配套 Make 程序，不能据此声称 CMake 不支持 Unix Makefiles 生成器。后续报告还发现 MSVC 拒绝 GCC 风格的 `-Wextra`，以及核心/LuaJIT 子项目继续依赖 GNU Make。固定版 [CMake 源码](https://github.com/Farama-Foundation/stable-retro/blob/v1.0.1/CMakeLists.txt) 中确有这两类依赖；仅把主生成器换成 Ninja 不能解决整个构建。当前停止继续修 MSVC 路线。
+| 检查 | Windows 提交结果 | Mac 审核范围 |
+|---|---|---|
+| 固定输入 | 80 输入及逐次推理动作差异 0；概率最大误差约 5.7e-6 | 阅读提交的数值与配置，保留浮点误差边界 |
+| 原生扩展与 Genesis | 现有 Conda `sye6308` 中可加载，不依赖工具链 PATH | 审阅构建命令、依赖说明与补丁 |
+| 原生开局 | 9 个开局恢复及重复输入通过 | 核对九种模式/星级的完整记录 |
+| 完整 PvP | 11/24；P1 6/12、P2 5/12 | 独立逐局比较九项字段并重新统计 |
+| 完整 PvE | 8/8 | 独立逐局比较与重新统计 |
 
-**当前不安装 WSL2/Ubuntu，不修改系统组件，不自动重启。** 下一步先把现有 Windows 报告提交到任务分支，然后给 Windows 原生 GNU 工具链一次最多 45 分钟的可行性验证。优先核查现有工具，确需增加时仅使用当前用户目录下的隔离工具与会话环境变量，不改全局 PATH；需要管理员权限或系统组件时停止并报告。
+Windows 使用原生 Windows 11、64 位 Python 3.12.14、PyTorch 2.5.1+cpu、stable-retro 1.0.1；未安装 WSL2。报告的构建耗时约 17 分钟，32 局评估耗时约 102.5 秒；未训练新策略、未修改参考权重或游戏规则。这些结果证明当前 CPU 平台组合在所列条件下能够复现，不是未知对手上的胜率或所有设备组合的保证。官方 Arena 最终包验收仍未完成。
 
-MSYS2 提供 Windows 上的构建工具，不能直接把它自带的 Python 当作已经装好 PyTorch 的 Conda Python。[MSYS2 官方说明](https://www.msys2.org/docs/python/)明确指出其 Python 的 C 扩展与普通 Windows CPython 不兼容；[UCRT64](https://www.msys2.org/docs/environments/) 是其当前推荐环境。因此，只将 GNU 工具链用于构建，目标保持现有 `sye6308` 的 Windows Python 3.12。第一阶段门槛是扩展能在该环境中加载，而不是在另一个 Python 中能 import。不能切换到 MSYS2 Python 并重装整套依赖来绕过这个门槛。
+### 构建恢复方式与后续边界
 
-只有扩展加载成功，才继续检查 Genesis 核心、ROM、9 个开局恢复和完整 24+8 局基线。45 分钟内未打通就保存精确阻碍，不接着改第三方核心或重写打包系统；WSL2 仍只是待用户决定的备选。最新具体指令由用户在聊天中转交，不保存到仓库，不新增一套 trainer 或重复运行入口。
+最初的 `CMAKE_MAKE_PROGRAM is not set` 表示缺配套 Make，不能解释为生成器不受支持。后续 MSVC 与 GCC 风格参数、GNU Make 子项目的冲突，最终通过用户目录中的 MSYS2/UCRT64 工具链解决；目标仍是现有 Conda Windows Python，而非 MSYS2 自带 Python。Genesis-only 构建的配置参数和安装方式保留在上述报告中。PyPI 源码包缺少的扩展源码由官方同版本 tag 补齐，必要运行 DLL 随扩展放置；没有新建替代打包框架。
+
+25 行补丁仅增加可选核心选择参数和 `cstdint` 头文件引用。核心选择参数为空时仍构建全部核心，本次选择 Genesis；不修改 Genesis 转移逻辑。换机重建时沿用所列版本、同版本源码、补丁及命令，不盲目升级或重复 MSVC 排查。当前已经通过检查的机器无需重新安装或重新构建。
+
+环境恢复阶段结束。下一步转为现有策略的能力瓶颈诊断，具体 prompt 由用户在聊天中转交。当前保留模型有 42 个物理输入模板，但三个冻结专家各自先给出一个贪心动作，路由再在这些提议中选择；本模型的残差动作与完整动作修正分支均未启用。需要验证的是这种候选限制是否挡住了已知有效应对，不能仅凭结构存在就断言它是全部失败原因。没有明确新任务时不自动训练。
 
 ### WSL2 安装资料（仅在用户以后明确选择后执行）
 
-Stable-Retro 官方文档提供 [Windows WSL2 运行说明](https://stable-retro.farama.org/linux_installation/)。采用这条备选时，使用 WSL2 Ubuntu 24.04、Python 3.12，并在 Linux 文件系统中克隆仓库。以下是备选资料，**不是现在的执行指令**。安装需用户明确授权；不得自动重启。
+当前原生 Windows 已能运行，无需为本项目另装 WSL2。Stable-Retro 官方文档仍提供 [Windows WSL2 运行说明](https://stable-retro.farama.org/linux_installation/)供将来另行选择；采用这条备选时，使用 WSL2 Ubuntu 24.04、Python 3.12，并在 Linux 文件系统中克隆仓库。以下是备选资料，**不是现在的执行指令**。安装需用户明确授权；不得自动重启。
 
 用户授权后，如尚未安装 WSL，可在**管理员 PowerShell**执行，再由用户决定重启与初始化 Ubuntu 的时间：
 

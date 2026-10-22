@@ -369,5 +369,40 @@
     ],
     "remaining_errors": [],
     "next_step": "Mac reviews the minimal build patch and per-match reproduction. No training is started automatically."
+  },
+  "mac_review": {
+    "date_hong_kong": "2026-10-22",
+    "status": "ACCEPTED_BASELINE_REPRODUCTION",
+    "method": "Reviewed the three submitted files and independently compared Windows episode records with the saved Mac reference; not a Windows rerun on the Mac.",
+    "matches_compared": 32,
+    "fields_per_match": [
+      "opponent",
+      "opponent_kind",
+      "player",
+      "offset",
+      "result",
+      "self_hp",
+      "opponent_hp",
+      "end_reason",
+      "native_frames"
+    ],
+    "field_differences": 0,
+    "duplicate_conditions": 0,
+    "missing_conditions": 0,
+    "native_frames_recomputed": 60141,
+    "pvp_wins_recomputed": 11,
+    "pvp_games_recomputed": 24,
+    "p1_wins_recomputed": 6,
+    "p2_wins_recomputed": 5,
+    "pve_wins_recomputed": 8,
+    "pve_games_recomputed": 8,
+    "patch_review": "Optional core selection defaults to the original all-core build; this build selects Genesis. The other change adds the standard cstdint header. No game transition/reward/model changes appear in the submitted patch.",
+    "project_runtime_policy_or_config_changes": false,
+    "limitations": [
+      "Evidence covers the fixed saved-input checks and 32 declared complete matches on this Windows CPU environment.",
+      "No new strategy was trained; no adaptive/robust improvement is established.",
+      "Official course Arena final-package acceptance remains untested."
+    ],
+    "next_stage": "Diagnose whether frozen-expert candidate restrictions exclude useful responses at existing failure states, before selecting a training change."
   }
 }
