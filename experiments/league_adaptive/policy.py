@@ -32,7 +32,13 @@ class VisibleHistoryEncoder(BaseFeaturesExtractor):
         image=torch.where(flip[:,None,None,None],image.flip(-1),image)
         pos[:,0]=torch.where(flip,.5-pos[:,0],pos[:,0]);pos[:,2]=torch.where(flip,.5-pos[:,2],pos[:,2]);pos[:,4]=pos[:,4].abs()
         history=torch.cat((image,image[:,1:]-image[:,:-1]),dim=1)
-        return torch.cat((self.visual(history),self.coordinates(pos*8)),dim=1)
+        spatial=self.visual[0](history)
+        visual=self.visual[2](self.visual[1](spatial))
+        coordinates=self.coordinates(pos*8)
+        if getattr(self,'expose_spatial_context',False):
+            context=torch.cat((spatial,coordinates),dim=1)
+            self.current_spatial_context=F.layer_norm(context,(context.shape[1],))
+        return torch.cat((visual,coordinates),dim=1)
 
 
 class ResponsePolicy(MultiInputActorCriticPolicy):
@@ -79,7 +85,16 @@ class ResponsePolicy(MultiInputActorCriticPolicy):
         return result
 
 
+def response_kwargs(definition):
+    return dict(features_extractor_class=VisibleHistoryEncoder,net_arch=dict(pi=[128],vf=[128]),
+        action_mirror=mirror_indices(definition['actions']),reference_definition=definition.get('reference_definition'),
+        prior_strength=definition.get('prior_strength',.5))
+
+
 def construct_policy(definition):
+    if definition['kind'] in ('sequence_double_q','sequence_ppo'):
+        from experiments.ryu_counterq.policy import construct_sequence_q
+        return construct_sequence_q(definition)
     if definition['kind']=='counterfactual_option_planner':
         from experiments.ryu_option_planner.policy import construct_planner
         return construct_planner(definition)
@@ -101,9 +116,7 @@ def construct_policy(definition):
         return construct_direct(definition)
     if definition['kind']!='response':raise ValueError('Unsupported policy kind in the minimal handoff: '+definition['kind'])
     return ResponsePolicy(spaces(definition),__import__('gymnasium').spaces.Discrete(len(definition['actions'])),lambda _:1e-4,
-        features_extractor_class=VisibleHistoryEncoder,net_arch=dict(pi=[128],vf=[128]),
-        action_mirror=mirror_indices(definition['actions']),reference_definition=definition.get('reference_definition'),
-        prior_strength=definition.get('prior_strength',.5))
+        **response_kwargs(definition))
 
 
 def response_definition(base,reference=False,prior_strength=.5):

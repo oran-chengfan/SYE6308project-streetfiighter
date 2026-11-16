@@ -1,0 +1,13 @@
+{
+  "python": "3.12.14",
+  "packages": {
+    "stable-baselines3": "2.7.0",
+    "torch": "2.5.1+cpu",
+    "numpy": "1.26.4",
+    "gymnasium": "1.2.3",
+    "cloudpickle": "3.1.2"
+  },
+  "observation": "image uint8[4,84,96], position float32[6], self-first and divided by 1024",
+  "action": "deterministic discrete input-template index; see policy_definition.json",
+  "scope": "Versions used for local CPU reload. The emulator and game setup are separate from policy inference."
+}

@@ -14,25 +14,35 @@ from experiments.league_adaptive.environment import FightEnv,family
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--agent',required=True);parser.add_argument('--out',required=True)
-    parser.add_argument('--pool',default='artifacts/ryu_adaptive_curriculum_20261021/focus_pool.json');args=parser.parse_args();setup()
+    parser.add_argument('--pool',default='configs/focus_pool.json')
+    parser.add_argument('--case',action='append',nargs=3,metavar=('OPPONENT','PORT','OFFSET'))
+    args=parser.parse_args();setup()
     out=Path(args.out);out.mkdir(parents=True,exist_ok=False);actor=load_actor(args.agent)
-    source=json.loads(Path(args.pool).read_text());names=('tactical_walk_guard','heldout_fireball_timing','strong_response')
-    rivals=[next(r for r in source if r['id']==name) for name in names];env=FightEnv(actor.definition,rivals)
+    rivals=json.loads(Path(args.pool).read_text());env=FightEnv(actor.definition,rivals)
     ids={a['name']:i for i,a in enumerate(actor.actions)};rows=[]
-    cases=[(0,1,12),(1,1,0),(2,2,0)]
+    requested=args.case or [('tactical_walk_guard',1,12),('heldout_fireball_timing',1,0),('strong_response',2,0)]
+    cases=[(next(i for i,r in enumerate(rivals) if r['id']==name),int(port),int(offset)) for name,port,offset in requested]
     try:
         for index,port,offset in cases:
+            env.reset(options=dict(opponent=index,player=port,offset=offset));actor.reset()
+            saved=env.save();actor_state=copy.deepcopy(actor.get_state())
             baseline=None
             for intervention in ('original','neutral_instead_of_walk','uppercut_instead_of_walk'):
-                obs,_=env.reset(options=dict(opponent=index,player=port,offset=offset));actor.reset();replacements=0;walk_calls=0;ground_motion=0
+                obs=env.restore(saved);actor.set_state(copy.deepcopy(actor_state));replacements=0;walk_calls=0;ground_motion=0
                 while not env.ended:
                     before=copy.deepcopy(actor.get_state());raw=dict(env.game.raw)
                     action=int(actor.predict(obs,True)[0]);name=actor.actions[action]['name']
-                    if bool(actor.policy.last_option_starts[0]) and name in ('LEFT','RIGHT') and intervention!='original':
-                        duration=int(actor.policy.last_duration_choices[0]);dx=raw[f'p{3-port}_x']-raw[f'p{port}_x']
+                    option_start=bool(actor.policy.last_option_starts[0]) if hasattr(actor.policy,'last_option_starts') else True
+                    if option_start and name in ('LEFT','RIGHT') and intervention!='original':
+                        duration=int(actor.policy.last_duration_choices[0]) if hasattr(actor.policy,'last_duration_choices') else 1
+                        dx=raw[f'p{3-port}_x']-raw[f'p{port}_x']
                         replacement='NO_OP' if intervention=='neutral_instead_of_walk' else f"SHORYUKEN_{'R' if dx>=0 else 'L'}_X"
                         action=ids[replacement];actor.set_state(before)
-                        actor.policy.observe_and_force_option(obs,action,duration);replacements+=1
+                        if hasattr(actor.policy,'observe_and_force_option'):
+                            actor.policy.observe_and_force_option(obs,action,duration)
+                        elif before is not None:
+                            raise ValueError('Stateful policies require an explicit actual-input memory update')
+                        replacements+=1
                     actual_name=actor.actions[action]['name'];walk_calls+=int(actual_name in ('LEFT','RIGHT'))
                     obs,_,_,_,info=env.step(action)
                     if actual_name in ('LEFT','RIGHT') and raw[f'p{port}_y']==192 and env.game.raw[f'p{port}_y']==192 and not info['damage_taken']:

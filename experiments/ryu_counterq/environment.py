@@ -1,7 +1,7 @@
 """Actual counterfactual native transitions; no simulated game is counted as real."""
 from experiments.league_adaptive.runtime import setup
-from experiments.ryu_adaptive_curriculum.train_direct_sequence import CoverageEnv
-from experiments.ryu_direct_league.environment import RyuEnv
+from experiments.ryu_direct_league.environment import CoverageEnv
+from experiments.ryu_direct_league.environment import RyuEnv,win_reward
 
 
 class BranchingEnv(CoverageEnv):
@@ -12,10 +12,7 @@ class BranchingEnv(CoverageEnv):
     def q_reward(self,before,info,done):
         if self.q_objective=='graded':
             return .25*(info['damage_dealt']-info['damage_taken'])/176.+float(info['result']=='win')-float(info['result']=='loss')
-        p=self.player;q=3-p;prior=.25*(max(0,before[f'p{p}_hp'])-max(0,before[f'p{q}_hp']))/176.
-        after=0. if done else .25*(max(0,info['self_hp'])-max(0,info['opponent_hp']))/176.
-        terminal=(1. if info['result']=='win' else -1.) if done else 0.
-        return terminal+after-prior
+        return win_reward(before,info,self.player,done)
 
     def step(self,action,**kwargs):
         before=dict(self.game.raw);observation,old,t,tr,info=super().step(action,**kwargs)

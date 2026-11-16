@@ -104,7 +104,11 @@ def initialize(source,actions,canonical=False):
 
 
 def save(path,policy,definition,training=None,optimizer=None):
-    path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
+    path=Path(path)
+    from experiments.league_adaptive.runtime import ROOT
+    if path.resolve().is_relative_to((ROOT/'models/counter_ryu_final').resolve()):
+        raise ValueError('Research saving cannot modify the retained reference directory')
+    path.parent.mkdir(parents=True,exist_ok=True)
     payload=dict(definition=definition,state_dict={k:v.detach().cpu() for k,v in policy.state_dict().items()},training=training or {})
     if optimizer is not None:payload['optimizer_state']=optimizer.state_dict()
     temporary=path.with_suffix('.writing');torch.save(payload,temporary);temporary.replace(path)

@@ -1,5 +1,14 @@
 # Counter-Ryu：所有 Codex 会话必须遵守
 
+## 2026-11-16 主分支交付状态（覆盖下文过时的模型与训练方向）
+
+当前默认交付为 F：`models/competition_delivery/group10_Ryu.zip`，原始权重为 `models/ryu_targeted_delivery/feedback_candidate.pt`。它是 Ryu 循环 PPO 加已验证连续轨迹整合，不再按早期 DDQN/重新选角安排自动启动研究。默认运行 `notebooks/working/sye6308_group10_1110.ipynb`，保留课程53格结构；训练默认关闭。原 `models/counter_ryu_final/` 是更早的历史参考，继续保留，不冒充当前F。
+
+F 的固定记录为全角色96/96 CPU KO、已知PvP204/204、公告四场资格赛1136分；均非未知对手保证。单zip本地可运行，但不符合存档R2外层容器接口，官方Arena未验收。广泛有效走位与持续能力积累尚未实现。后续实验在 `win/*` 分支开展，失败候选不自动替换F。
+
+main 是精简交付，不包含所有研究权重及轨迹缓存。历史报告中的候选与大数据路径到原任务分支或Windows本地查找。Mac的本次整合不启动新训练；后续以用户新任务为准。其余禁止哈希、禁止堆代码、保持游戏规则及部署输入合法性等要求继续适用。
+
+
 ## 不可违反的要求
 
 1. **严令禁止计算、保存、比较或报告文件哈希/校验和。** 不得使用 hashlib、SHA/MD5、shasum、Get-FileHash、certutil 等方法做文件验证、ROM 导入、缓存命名、去重、打包或交付。不得另加相关字段、清单或日志。正常使用 Git 同步版本；不要额外提取或展示文件摘要。

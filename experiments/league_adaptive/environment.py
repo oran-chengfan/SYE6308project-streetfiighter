@@ -1,15 +1,33 @@
 """Two controller ports, a frozen opponent pool and faithful native CPU rounds."""
 from __future__ import annotations
 import copy
+from functools import lru_cache
 from collections import Counter,deque
 import gymnasium as gym
 import numpy as np
 from experiments.league_adaptive.runtime import ROOT,NativeGame,Side,compiled,load_actor,spaces
 
 from experiments.league_adaptive.tactics import choose as tactic
+from experiments.league_adaptive.characters import generic_opponent,physical_actions
+
+
+@lru_cache(maxsize=1)
+def legacy_controller_definition():
+    """Keep old scripted opponents' exact physical commands across learners.
+
+    A new learner's catalog must not silently redefine or weaken a historical
+    opponent. These are opponent inputs, not teacher control of the learner.
+    """
+    import torch
+    from experiments.league_adaptive.runtime import TARGET
+    d=torch.load(TARGET,map_location='cpu',weights_only=False)['definition']
+    return {k:d[k] for k in ('actions','observation_source','observation_config')}
 
 
 def family(name):
+    if name.startswith('QCF_'):return 'quarter_circle_input'
+    if name.startswith('DP_'):return 'forward_down_diagonal_input'
+    if name.startswith('HCF_'):return 'half_circle_input'
     if name.startswith('SHORYUKEN'):return 'uppercut_input'
     if name.startswith('HADOUKEN'):return 'projectile_input'
     if name.startswith('TATSUMAKI'):return 'spinning_kick_input'
@@ -23,16 +41,71 @@ def family(name):
 
 def scheduled_style(config,decision_number):
     """Observer-only label for a controlled switching opponent's next input."""
-    if config.get('kind')=='tactical' and config.get('style')=='switching':
+    if config.get('kind') in ('tactical','generic') and config.get('style')=='switching':
         return config['styles'][((int(decision_number)-1)//int(config['switch_every']))%len(config['styles'])]
     return None
+
+
+def outcome_reward(kind,result,reason,cpu):
+    """Training objective only; native match scoring remains unchanged."""
+    if kind=='pve_ko_priority' and cpu:
+        return float(result=='win' and reason not in ('native_time_up','frame_cap'))-float(result=='loss')
+    if kind in ('terminal_score','pve_ko_priority','damage'):
+        return float(result=='win')-float(result=='loss')
+    return float(result=='win')
+
+
+def sample_training_condition(pool,config,rng):
+    """Fixed exogenous condition distribution for matched algorithm studies.
+
+    Both algorithms call this implementation. There is no score-dependent
+    task adaptation in this mode; opponent metadata never enters the actor.
+    """
+    ports=tuple(config.get('learner_sides',(1,2)))
+    if not ports or len(set(ports))!=len(ports) or any(p not in (1,2) for p in ports):
+        raise ValueError('Learner sides must be a nonempty subset of [1, 2]')
+    conditions=[(i,p,o) for i,r in enumerate(pool)
+                for p in ((1,) if r['kind']=='cpu' else ports)
+                for o in ((0,) if r['kind']=='cpu' else config.get('coverage_offsets',(0,12)))]
+    groups=['pve' if pool[i]['kind']=='cpu' else f'p{p}' for i,p,_ in conditions]
+    sizes=Counter(groups);totals=config['training_group_weights']
+    weights=np.asarray([float(totals[g])/sizes[g]*float(pool[i].get('training_weight',1.))
+                        for (i,_,_),g in zip(conditions,groups)])
+    for group in sizes:
+        selected=np.asarray([g==group for g in groups])
+        if totals[group]==0:
+            weights[selected]=0.
+        else:
+            weights[selected]*=totals[group]/weights[selected].sum()
+    focus=config.get('training_focus')
+    if focus:
+        ids=set(focus['opponents']);fraction=float(focus['fraction'])
+        if not ids or not ids<={r['id'] for r in pool} or not 0<=fraction<=1:
+            raise ValueError('Training focus must name existing opponents and a bounded mixture')
+        eligible=np.asarray([pool[i]['id'] in ids for i,_,_ in conditions])
+        for group in sizes:
+            selected=np.asarray([g==group for g in groups]);mass=weights[selected].sum()
+            target=weights[selected]*eligible[selected]
+            if target.sum()<=0:raise ValueError('Every sampled group needs a representative focus condition')
+            weights[selected]=(1-fraction)*weights[selected]+fraction*mass*target/target.sum()
+    if np.any(weights<0) or not np.isfinite(weights).all() or weights.sum()<=0:
+        raise ValueError('Invalid fixed training distribution')
+    return conditions[int(rng.choice(len(conditions),p=weights/weights.sum()))]
 
 
 class Controller:
     def __init__(self,config,definition):
         self.config=dict(config);self.count=0;self.actor=None
         if config['kind']=='agent':self.actor=load_actor(config['path']);self.definition=self.actor.definition
+        elif config['kind']=='generic':
+            self.definition={k:definition[k] for k in ('observation_source','observation_config')}
+            self.definition['actions']=physical_actions()
+        elif config['kind'] in ('rule','tactical'):
+            if config.get('character','Ryu')!='Ryu':raise ValueError('Historical Ryu scripts cannot be relabelled as another character')
+            self.definition=legacy_controller_definition()
         else:self.definition=definition
+        if self.actor is not None and config.get('character',self.definition.get('character','Ryu'))!=self.definition.get('character','Ryu'):
+            raise ValueError('Opponent character disagrees with the frozen model definition')
         self.actions={a['name']:i for i,a in enumerate(self.definition['actions'])};self.commands=compiled(self.definition['actions'])
     def reset(self):
         self.count=0
@@ -40,6 +113,7 @@ class Controller:
     def choose(self,side,raw):
         self.count+=1
         if self.actor is not None:return int(self.actor.predict(side.observe(raw),True)[0])
+        if self.config['kind']=='generic':return generic_opponent(self.config,raw,side.player,self.count,self.actions)
         c=self.config;style=c['style'];p=side.player;dx=raw[f'p{3-p}_x']-raw[f'p{p}_x'];distance=abs(dx)
         face='R' if dx>=0 else 'L';forward,back=('RIGHT','LEFT') if dx>=0 else ('LEFT','RIGHT')
         phase=(self.count+c.get('phase',0))%c.get('period',16)
@@ -77,7 +151,9 @@ class FightEnv(gym.Env):
         cpu=self.current['kind']=='cpu'
         if cpu:self.player=1
         self.offset=int(o.get('offset',0 if cpu else 12*(self.episode_index%2)))
-        self.game.open('pve' if cpu else 'pvp',int(self.current.get('stars',1)),self.current.get('character','Ryu'))
+        own=self.definition.get('character','Ryu');rival=self.current.get('character',self.controller.definition.get('character','Ryu'))
+        p1,p2=(own,rival) if self.player==1 else (rival,own)
+        self.game.open('pve' if cpu else 'pvp',int(self.current.get('stars',1)),p2,p1)
         for _ in range(self.offset):self.game.step_keys()
         self.native_frames+=self.offset
         self.sides={self.player:Side(self.definition,self.player),3-self.player:Side(self.controller.definition,3-self.player)}
@@ -108,9 +184,9 @@ class FightEnv(gym.Env):
         dealt=max(0,max(before[f'p{q}_hp'],0)-max(raw[f'p{q}_hp'],0));taken=max(0,max(before[f'p{p}_hp'],0)-max(raw[f'p{p}_hp'],0))
         phi0=.5*(max(before[f'p{p}_hp'],0)-max(before[f'p{q}_hp'],0))/176
         phi1=.5*(max(raw[f'p{p}_hp'],0)-max(raw[f'p{q}_hp'],0))/176 if reason is None else 0.
-        reward=float(result=='win')+phi1-phi0
-        if self.reward_kind=='terminal_score':reward=float(result=='win')-float(result=='loss')+phi1-phi0
-        if self.reward_kind=='damage':reward=(dealt-taken)/176+float(result=='win')-float(result=='loss')
+        terminal=outcome_reward(self.reward_kind,result,reason,cpu)
+        reward=terminal+phi1-phi0
+        if self.reward_kind=='damage':reward=(dealt-taken)/176+terminal
         self.episode_steps+=1;self.episode_return+=reward;self.ended=reason is not None
         info=dict(result=result,end_reason=reason,self_hp=raw[f'p{p}_hp'],opponent_hp=raw[f'p{q}_hp'],damage_dealt=dealt,damage_taken=taken,step_reward=reward,
             native_frames=self.game.elapsed,elapsed_native_frames=executed,opponent=self.current['id'],opponent_kind=self.current['kind'],player=p,offset=self.offset,action=index,opponent_action=other)
@@ -136,3 +212,42 @@ class FightEnv(gym.Env):
         if len(weights)!=len(self.pool) or min(weights)<=0:raise ValueError('Positive pool weights required')
         for c,w in zip(self.pool,weights):c['weight']=float(w)
     def close(self):self.game.close()
+
+
+class TrainingFightEnv(FightEnv):
+    """The shared fight with fixed training-only condition sampling."""
+    def __init__(self,definition,pool,config,seed):
+        super().__init__(definition,pool,reward=config['reward'])
+        self.training_config=copy.deepcopy(config)
+        self.sampling_rng=np.random.default_rng(seed)
+        self.student_reward=None
+        if config.get('student_reward_source'):
+            from experiments.league_adaptive.runtime import source_module
+            self.student_reward=source_module(config['student_reward_source']).compute_reward
+
+    def reset(self,*,seed=None,options=None):
+        if options is None:
+            i,p,o=sample_training_condition(self.pool,self.training_config,self.sampling_rng)
+            options=dict(opponent=i,player=p,offset=o)
+        return super().reset(seed=seed,options=options)
+
+    def step(self,action,*,opponent_action=None):
+        observation,reward,terminated,truncated,info=super().step(action,opponent_action=opponent_action)
+        if self.student_reward is not None:
+            # Student reward changes learning feedback, never the native referee.
+            replacement=float(self.student_reward(dict(info)))
+            if not np.isfinite(replacement):raise ValueError('Student reward must be finite')
+            self.episode_return+=replacement-reward
+            reward=replacement;info['step_reward']=replacement
+            if 'episode' in info:info['episode']['r']=self.episode_return
+        return observation,reward,terminated,truncated,info
+
+
+class TrainingWorker:
+    def __init__(self,definition,pool,config,seed):
+        self.definition,self.pool,self.config,self.seed=definition,pool,config,seed
+
+    def __call__(self):
+        from experiments.league_adaptive.runtime import setup
+        setup()
+        return TrainingFightEnv(self.definition,self.pool,self.config,self.seed)

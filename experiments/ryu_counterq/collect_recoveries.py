@@ -13,10 +13,30 @@ import torch
 
 from experiments.league_adaptive.runtime import Side,compiled,load_actor,setup,write
 from experiments.league_adaptive.environment import FightEnv
-from experiments.ryu_counterq.policy import make_extras
+
+
+RECOVERY_PREFIXES=[('baseline',[]),('walk4',[('toward',4)]),('walk8',[('toward',8)]),('retreat8',[('away',8)]),('retreat16',[('away',16)]),
+                   ('jump_strike',[('jump',3),('kick',1)]),('walk_sweep',[('toward',4),('sweep',1)]),
+                   ('guard_fireball',[('guard',8),('fireball',1)]),('wait8',[('neutral',8)])]
+
+
+def recovery_action(mode,raw,player,names):
+    """Expand the historical prefix against the current physical facing."""
+    forward='RIGHT' if raw[f'p{3-player}_x']>=raw[f'p{player}_x'] else 'LEFT'
+    back='LEFT' if forward=='RIGHT' else 'RIGHT'
+    name=(forward if mode=='toward' else back if mode=='away' else 'UP_'+forward if mode=='jump'
+          else 'DOWN_'+back if mode=='guard' else 'C_tap' if mode=='kick' else 'CROUCH_KICK_C' if mode=='sweep'
+          else f'HADOUKEN_{"R" if forward=="RIGHT" else "L"}_Y' if mode=='fireball' else 'NO_OP')
+    if name not in names:
+        physical={'C_tap':'NO_OP_C_tap','CROUCH_KICK_C':'DOWN_C_tap',
+                  'HADOUKEN_R_Y':'QCF_RIGHT_Y','HADOUKEN_L_Y':'QCF_LEFT_Y'}
+        name=physical.get(name,name)
+    return names[name]
 
 
 def main():
+    from experiments.ryu_counterq.policy import make_extras
+
     p=argparse.ArgumentParser();p.add_argument('--student',required=True);p.add_argument('--out',required=True)
     p.add_argument('--teacher',default='models/counter_ryu_final/agent.pt')
     p.add_argument('--pool',default='artifacts/ryu_adaptive_curriculum_20261021/main_pool.json')
@@ -54,13 +74,6 @@ def main():
         reward=.25*(info['damage_dealt']-info['damage_taken'])/176.+float(info['result']=='win')-float(info['result']=='loss')
         return nxt,end,elapsed,dict(start=current,end=end,action=canonical*4,reward=reward,done=bool(t or tr),duration=1),info
 
-    def prefix_action(mode):
-        raw=env.game.raw;p=env.player;forward='RIGHT' if raw[f'p{3-p}_x']>=raw[f'p{p}_x'] else 'LEFT';back='LEFT' if forward=='RIGHT' else 'RIGHT'
-        return names[forward if mode=='toward' else back if mode=='away' else 'UP_'+forward if mode=='jump' else 'DOWN_'+back if mode=='guard' else 'C_tap' if mode=='kick' else 'CROUCH_KICK_C' if mode=='sweep' else f'HADOUKEN_{"R" if forward=="RIGHT" else "L"}_Y' if mode=='fireball' else 'NO_OP']
-
-    plans=[('baseline',[]),('walk4',[('toward',4)]),('walk8',[('toward',8)]),('retreat8',[('away',8)]),('retreat16',[('away',16)]),
-           ('jump_strike',[('jump',3),('kick',1)]),('walk_sweep',[('toward',4),('sweep',1)]),
-           ('guard_fireball',[('guard',8),('fireball',1)]),('wait8',[('neutral',8)])]
     try:
         for index,rival in enumerate(pool):
             for player in (1,2):
@@ -76,12 +89,12 @@ def main():
                         if row['done']:break
                     for root in saved:
                         root_reports=[]
-                        for name,plan in plans:
+                        for name,plan in RECOVERY_PREFIXES:
                             observation=env.restore(root['game']);side.frames=deque([f.copy() for f in root['frames']],maxlen=4)
                             current=root['node'];elapsed=root['elapsed'];episode=list(root['prefix'])
                             for mode,repetitions in plan:
                                 for _ in range(repetitions):
-                                    observation,current,elapsed,row,info=tick(observation,current,prefix_action(mode),role,elapsed,side);episode.append(row)
+                                    observation,current,elapsed,row,info=tick(observation,current,recovery_action(mode,env.game.raw,env.player,names),role,elapsed,side);episode.append(row)
                                     if env.ended:break
                                 if env.ended:break
                             while not env.ended:

@@ -1,0 +1,646 @@
+{
+  "status": "local_experiment_and_delivery_completed_joint_improvement_unmet",
+  "conclusion_cn": "资格赛加分在两个seed重复，但不能同时保住PvP。最高分研究点1324分、PvP186/204；最均衡研究点1236分、PvP191/204。比赛主交付保留F：指定四场1136分、已知PvP204/204、新8条件8/8。单ZIP真实可在项目本地加载和完整对局，但不符合现有R2外层容器的导入契约，不能声称官方Arena通过。",
+  "source_F": "models/ryu_targeted_delivery/feedback_candidate.pt",
+  "source_F_runtime": "models/ryu_targeted_delivery/feedback_runtime/policy.zip",
+  "delivery": {
+    "recommendation": "F",
+    "research_representative": "coverage_seed88131",
+    "single_zip": "models/competition_delivery/group10_Ryu.zip",
+    "qualification_score": 1136,
+    "raw_export_and_game_identity_passed": true,
+    "official_arena": false,
+    "available_Arena_version": "Public Practice R2; final competition version unconfirmed",
+    "single_zip_local_runtime_passed": true,
+    "R2_outer_submission_import_compatible": false,
+    "research_representative_fresh_port_gate": false,
+    "F_final_new_PvP": "8/8; P1 4/4, P2 4/4"
+  },
+  "formal_reference_overwritten": false,
+  "starting_F_overwritten": false,
+  "F_baseline": [
+    {
+      "result": "win",
+      "end_reason": "signed_hp_ko",
+      "self_hp": 154,
+      "opponent_hp": -1,
+      "native_frames": 759,
+      "post_match_frames": 60,
+      "post_match_seconds": 1.0012892700049867,
+      "post_match_visible_changes": 25,
+      "opponent": "ChunLi",
+      "stars": 2,
+      "player": 1,
+      "offset": 0,
+      "score_if_win_raw": 331,
+      "score_if_win_hp_clipped": 330,
+      "elapsed_seconds": 12.666309265563081,
+      "video": "reports/competition_delivery/F_qualification_ChunLi_2.mp4",
+      "score_interpretations": {
+        "remaining_hp_difference": 154,
+        "KO_win": true,
+        "example_interpretation": 330,
+        "literal_text_with_native_outcome": 330,
+        "unambiguous_KO_win_score": 330,
+        "status": "Announcement interpretations; actual final scorer unavailable. Native result is unchanged."
+      },
+      "score": 330
+    },
+    {
+      "result": "win",
+      "end_reason": "signed_hp_ko",
+      "self_hp": 176,
+      "opponent_hp": -1,
+      "native_frames": 659,
+      "post_match_frames": 60,
+      "post_match_seconds": 1.0012892700049867,
+      "post_match_visible_changes": 38,
+      "opponent": "Ryu",
+      "stars": 2,
+      "player": 1,
+      "offset": 0,
+      "score_if_win_raw": 353,
+      "score_if_win_hp_clipped": 352,
+      "elapsed_seconds": 10.99749381555477,
+      "video": "reports/competition_delivery/F_qualification_Ryu_2.mp4",
+      "score_interpretations": {
+        "remaining_hp_difference": 176,
+        "KO_win": true,
+        "example_interpretation": 352,
+        "literal_text_with_native_outcome": 352,
+        "unambiguous_KO_win_score": 352,
+        "status": "Announcement interpretations; actual final scorer unavailable. Native result is unchanged."
+      },
+      "score": 352
+    },
+    {
+      "result": "win",
+      "end_reason": "signed_hp_ko",
+      "self_hp": 84,
+      "opponent_hp": -1,
+      "native_frames": 1813,
+      "post_match_frames": 60,
+      "post_match_seconds": 1.0012892700049867,
+      "post_match_visible_changes": 31,
+      "opponent": "Ryu",
+      "stars": 4,
+      "player": 1,
+      "offset": 0,
+      "score_if_win_raw": 261,
+      "score_if_win_hp_clipped": 260,
+      "elapsed_seconds": 30.255624108650682,
+      "video": "reports/competition_delivery/F_qualification_Ryu_4.mp4",
+      "score_interpretations": {
+        "remaining_hp_difference": 84,
+        "KO_win": true,
+        "example_interpretation": 260,
+        "literal_text_with_native_outcome": 260,
+        "unambiguous_KO_win_score": 260,
+        "status": "Announcement interpretations; actual final scorer unavailable. Native result is unchanged."
+      },
+      "score": 260
+    },
+    {
+      "result": "win",
+      "end_reason": "signed_hp_ko",
+      "self_hp": 18,
+      "opponent_hp": -1,
+      "native_frames": 1989,
+      "post_match_frames": 60,
+      "post_match_seconds": 1.0012892700049867,
+      "post_match_visible_changes": 32,
+      "opponent": "Ryu",
+      "stars": 8,
+      "player": 1,
+      "offset": 0,
+      "score_if_win_raw": 195,
+      "score_if_win_hp_clipped": 194,
+      "elapsed_seconds": 33.19273930066531,
+      "video": "reports/competition_delivery/F_qualification_Ryu_8.mp4",
+      "score_interpretations": {
+        "remaining_hp_difference": 18,
+        "KO_win": true,
+        "example_interpretation": 194,
+        "literal_text_with_native_outcome": 194,
+        "unambiguous_KO_win_score": 194,
+        "status": "Announcement interpretations; actual final scorer unavailable. Native result is unchanged."
+      },
+      "score": 194
+    }
+  ],
+  "F_four_total_announcement_examples": 1136,
+  "qualification_settings": {
+    "game": "StreetFighterIISpecialChampionEdition-Genesis",
+    "mode": "hyper",
+    "speed_stars": 2,
+    "decision_frames": 6,
+    "player": 1,
+    "offset": 0,
+    "status": "Announcement confirms four opponents and swapped-side PvP. P1/offset0 is the current repository standard; exact final start, offset and round schedule are not specified by the supplied Announcement."
+  },
+  "score_interpretation": "All4KO:176+visible remainingHP difference, terminal negative nativeKOHP mapped to0. Raw signed readings retained. No official loss/time-up formula selected from contradictory announcement text/examples.",
+  "rules_audit": {
+    "available_sources": [
+      "User current message: four qualification opponents and win-score example",
+      "notebooks/upstream/sye6308-sf2-arena-2026.ipynb: Public Practice Arena R2",
+      "course/Championship_notes.pdf: older notes"
+    ],
+    "differences": [
+      {
+        "item": "qualification",
+        "latest_user": "ChunLi2,Ryu2,Ryu4,Ryu8",
+        "old_pdf": "Ryu CPU only; win ranking by completion time, loss ranking remainingHP",
+        "public_R2": "no qualification HP bonus formula implemented; practice round outcomes only"
+      },
+      {
+        "item": "KO_HP",
+        "old_pdf": "HP reaches0",
+        "public_R2": "signed HP strictly negative, or native round counter; double negative draw",
+        "observed": "all4CPU opponents end at-1. Clamping KO remainingHP to0 versus rawHP changes total by4.",
+        "announcement_examples": "176/0 and100/0 are KO wins;70/50 time-up called draw and earns20, unlike native-game HP winner."
+      },
+      {
+        "item": "loss_draw_score",
+        "latest_user": "Text says absolute remaining difference on a loss; example0/80 is-80. Time-up70/50 earns20 without176bonus.",
+        "public_R2": "wins/draw/cutoff only; no corresponding score function",
+        "status": "Exact prose/example contradiction preserved; all4F baselineKO scores agree and total1136."
+      },
+      {
+        "item": "offsets_and_ports",
+        "public_R2": "selfcheck[0,12] for2assignments; practice4games. NativeCPU learnerP1. Not proof of final schedule.",
+        "local_baseline": "P1offset0, ordinary native standard starts",
+        "final": "await actual finalArena/announcement"
+      },
+      {
+        "item": "time",
+        "local": "native game timer99; native engine59.922744Hz; safety cap7200frames. Report actual simulator seconds, not walltime.",
+        "public_R2": "native timer highestHP; equalHP draw; safety cutoff not winner; cap fromcommonconfig",
+        "final": "not confirmed"
+      },
+      {
+        "item": "submission",
+        "old_pdf": ".pth act(state)",
+        "public_R2": "outer submission container + inner agent.zip + model.py/spec/observation/reward/config; mandatory integrity files",
+        "latest_user": "one ZIP; contents/load contract not yet supplied"
+      }
+    ],
+    "prohibited_steps": [
+      {
+        "source": "sf2_bundle.LoadedAgent",
+        "lines": "57-80",
+        "blocked": "requires package verification records before PPO.load; do not fabricate them."
+      },
+      {
+        "source": "sf2_arena_actor / sf2_arena.play_matches",
+        "blocked": "per-load and per-match model-parameter verification; prohibited original flow cannot run."
+      },
+      {
+        "source": "sf2_submission",
+        "blocked": "outer/inner archive integrity and generated receipts; do not run original packaging/static validation."
+      }
+    ],
+    "available_checks": "Standalone one-policy.zip isolated PPO.load, actual six-frame commands, image/history/reset semantics, instance isolation and native complete matches remain executable independently.",
+    "official_status": "blocked at specific prohibited verification gates in available R2; additionally actual final release missing. No modified local flow is called official acceptance.",
+    "announcement_received": true,
+    "latest_announcement_source": "User supplied original announcement text in chat; no actual final Arena source location supplied."
+  },
+  "method_summary": [
+    {
+      "model": "models/competition_delivery/seed88131.pt",
+      "label": "seed88131",
+      "updates": 96,
+      "qualification_score": 1287,
+      "qualification_KO": 4,
+      "PvP": {
+        "games": 204,
+        "wins": 185,
+        "losses": 17,
+        "draws": 2,
+        "ports": {
+          "1": {
+            "games": 102,
+            "wins": 96
+          },
+          "2": {
+            "games": 102,
+            "wins": 89
+          }
+        }
+      },
+      "fresh": {
+        "games": 8,
+        "wins": 7,
+        "losses": 1,
+        "draws": 0,
+        "ports": {
+          "1": {
+            "games": 4,
+            "wins": 3
+          },
+          "2": {
+            "games": 4,
+            "wins": 4
+          }
+        }
+      }
+    },
+    {
+      "model": "models/competition_delivery/seed88137.pt",
+      "label": "seed88137",
+      "updates": 256,
+      "qualification_score": 1324,
+      "qualification_KO": 4,
+      "PvP": {
+        "games": 204,
+        "wins": 186,
+        "losses": 16,
+        "draws": 2,
+        "ports": {
+          "1": {
+            "games": 102,
+            "wins": 94
+          },
+          "2": {
+            "games": 102,
+            "wins": 92
+          }
+        }
+      },
+      "fresh": {
+        "games": 8,
+        "wins": 6,
+        "losses": 1,
+        "draws": 1,
+        "ports": {
+          "1": {
+            "games": 4,
+            "wins": 2
+          },
+          "2": {
+            "games": 4,
+            "wins": 4
+          }
+        }
+      }
+    },
+    {
+      "model": "models/competition_delivery/coverage_seed88131.pt",
+      "label": "coverage_seed88131",
+      "updates": 96,
+      "qualification_score": 1236,
+      "qualification_KO": 4,
+      "PvP": {
+        "games": 204,
+        "wins": 191,
+        "losses": 13,
+        "draws": 0,
+        "ports": {
+          "1": {
+            "games": 102,
+            "wins": 97
+          },
+          "2": {
+            "games": 102,
+            "wins": 94
+          }
+        }
+      },
+      "fresh": {
+        "games": 8,
+        "wins": 7,
+        "losses": 1,
+        "draws": 0,
+        "ports": {
+          "1": {
+            "games": 4,
+            "wins": 3
+          },
+          "2": {
+            "games": 4,
+            "wins": 4
+          }
+        }
+      }
+    },
+    {
+      "model": "models/competition_delivery/coverage_seed88137.pt",
+      "label": "coverage_seed88137",
+      "updates": 96,
+      "qualification_score": 1287,
+      "qualification_KO": 4,
+      "PvP": {
+        "games": 204,
+        "wins": 188,
+        "losses": 14,
+        "draws": 2,
+        "ports": {
+          "1": {
+            "games": 102,
+            "wins": 98
+          },
+          "2": {
+            "games": 102,
+            "wins": 90
+          }
+        }
+      },
+      "fresh": {
+        "games": 8,
+        "wins": 8,
+        "losses": 0,
+        "draws": 0,
+        "ports": {
+          "1": {
+            "games": 4,
+            "wins": 4
+          },
+          "2": {
+            "games": 4,
+            "wins": 4
+          }
+        }
+      }
+    },
+    {
+      "model": "models/competition_delivery/control_seed88131.pt",
+      "label": "control88131",
+      "updates": 96,
+      "qualification_score": 1136,
+      "qualification_KO": 4,
+      "PvP": {
+        "wins": 201,
+        "ports": {
+          "1": {
+            "episodes": 102,
+            "wins": 100,
+            "losses": 2,
+            "draws": 0,
+            "cutoffs": 0,
+            "win_rate": 0.9803921568627451,
+            "hp_margin": 97.49019607843137
+          },
+          "2": {
+            "episodes": 102,
+            "wins": 101,
+            "losses": 1,
+            "draws": 0,
+            "cutoffs": 0,
+            "win_rate": 0.9901960784313726,
+            "hp_margin": 103.19607843137256
+          }
+        }
+      },
+      "fresh": {
+        "episodes": 8,
+        "wins": 8,
+        "losses": 0,
+        "draws": 0,
+        "cutoffs": 0,
+        "win_rate": 1.0,
+        "hp_margin": 108.875
+      }
+    },
+    {
+      "model": "models/competition_delivery/control_seed88137.pt",
+      "label": "control88137",
+      "updates": 96,
+      "qualification_score": 1136,
+      "qualification_KO": 4,
+      "PvP": {
+        "wins": 201,
+        "ports": {
+          "1": {
+            "episodes": 102,
+            "wins": 100,
+            "losses": 2,
+            "draws": 0,
+            "cutoffs": 0,
+            "win_rate": 0.9803921568627451,
+            "hp_margin": 95.67647058823529
+          },
+          "2": {
+            "episodes": 102,
+            "wins": 101,
+            "losses": 1,
+            "draws": 0,
+            "cutoffs": 0,
+            "win_rate": 0.9901960784313726,
+            "hp_margin": 101.48039215686275
+          }
+        }
+      },
+      "fresh": {
+        "episodes": 8,
+        "wins": 8,
+        "losses": 0,
+        "draws": 0,
+        "cutoffs": 0,
+        "win_rate": 1.0,
+        "hp_margin": 127.125
+      }
+    }
+  ],
+  "main_control_result_cn": "匹配96更新对照两个seed均201/204，F本身仍204/204。实验两个seed191/204、188/204，分别净少10、13胜；不能把对照当作完全未变F。",
+  "training": {
+    "algorithm": "Original recurrentPPO policy, separate sequence auxiliary fitting this cycle",
+    "PPO_updates": 0,
+    "TD_updates": 0,
+    "updated_parameters": "Existing two-layer nonlinear action readout only; critic inactive, CNN/coordinates/GRU frozen. Frozen weights do not guarantee retained outcomes.",
+    "losses": "0.1sequence CE / physical-distribution cross-entropy; common repairs add0.1worst-retained-window KL. Same data/optimizer settings per A/B pair; labels differ on verified response histories.",
+    "correction1": "Earliest uncontrolled divergence atdecision0 and desired six guards only0/6 and1/6 in initialfailedfit. Added existing worst-window soft retention, botharms.",
+    "correction2": "Measured systematic old character/P2 losses; same retention coefficient and96updates, only8more shared independentF success histories. No third correction.",
+    "seeds": [
+      88131,
+      88137
+    ],
+    "same_discovery_shared": true,
+    "saved_state": "Public checkpoints are inference weights; exact full PPO/simulator resume is not claimed. Original F remains untouched."
+  },
+  "evidence": {
+    "final_research_model": "models/competition_delivery/coverage_seed88131.pt",
+    "same_model_qualification_total": 1236,
+    "same_model_known_PvP": 191,
+    "same_model_P1": 97,
+    "same_model_P2": 94,
+    "same_model_final_fresh": "7/8: P1 3/4, P2 4/4",
+    "supplemental_CPU96": 87,
+    "final_frozen_input_pairs": "Four-star99versus84HP; eight-star103versus18HP when actual differing6-frame request is replaced byDP, bothfollowed by SAME student.",
+    "tactical_claim": "Conditional opening timing/input-history benefit proved in these states. Six-guard defense, active footwork and broad adaptive tactical mastery not proved. No counts of directions or templates are used as success criteria."
+  },
+  "limitations": [
+    "Every four-game score belongs to one exact checkpoint; different seeds/weights never pooled.",
+    "Two optimization seeds share20selected histories; not independent tactical discovery or independent environment samples.",
+    "Old first8heldout conditions were executed before last correction and are now consumed regression; final8were fixed before that correction and no final results were used for updating.",
+    "F96/204 baselines explicitly reused from earlier same-weight measurements; final deliveredZIP additionally passed actual four games, two-port native self-play and isolated reload. Deterministic repeated starts verify identity, not extra performance evidence.",
+    "A control changes four readout tensors despite same four-game results; actual control204was measured instead of assumingF results.",
+    "No isolated supervision-only versus retention-only gradient ablation was performed. PPO was not updated, so this cannot demonstrate PPO algorithm inferiority.",
+    "Available Arena source is Public PracticeR2, not an independently confirmed final competition release. Official start offsets/round count and scoring ambiguities require course confirmation.",
+    "No more fitting after final freeze; better heldout score of another candidate was not used to switch the preregistered review representative."
+  ],
+  "deliverable_files": {
+    "zip": "models/competition_delivery/group10_Ryu.zip",
+    "notebook": "notebooks/working/sye6308_group10_1110.ipynb",
+    "selected_experience": "selected_experience.pt",
+    "data_manifest": "data_manifest.json",
+    "training": "training_records.json",
+    "pvp": "pvp_comparison.json",
+    "mechanism": "mechanism.json",
+    "compatibility": "compatibility.json",
+    "costs": "costs.json",
+    "curve": "score_tradeoff.png",
+    "qualification_videos": "showcase_delivery.json",
+    "research_videos": "showcase_candidate.json"
+  },
+  "stopping_reason_cn": "完整执行主要比较、两次有证据修正、两个训练seed、四场筛选、实际对照及候选双端口204、新冻结条件和单ZIP完整对局后，仍存在成类PvP损失。按本轮规则关闭该训练方向并交付已验证F，不是因固定预算跑完，也不表示整体adaptive/robust目标完成。",
+  "processes": {
+    "project_training_evaluation_recording_active": false,
+    "audit": "Windows process query found no Python/pythonw/ffmpeg process at final audit; no process was terminated for this delivery.",
+    "state": "ended"
+  },
+  "official_arena": "Not executed; see compatibility.json for exact incompatible container and prohibited gates.",
+  "implementation_repairs_cn": [
+    "验证器起初把原始125动作F与部署64动作目录混用，验证在采样前停止；改用同一F部署定义，不修改动作映射或期望值。",
+    "为补足P1经验而试采的一条F反制对局真实失败，成功库拒绝接收。该结果保留为额外开发失败，改用预声明旧保持条件邻近offset的实际F成功轨迹；未把它混入204基线或伪造为胜。",
+    "诊断采集器曾将相同物理历史、不同冻结控制器错误去重，遗漏候选续控；修正版本绑定，仅补采遗漏控制器，不计为独立胜局。未改变任何训练参数。",
+    "单ZIP导出新增嵌入动作/观察定义，公共加载器优先使用它并检测与可选伴随定义冲突；旧未嵌入ZIP继续原入口。实际独立加载与完整对局已验证。",
+    "可选训练入口随附20条精选连续经验，能在没有旧训练缓存时从单ZIP初始化；8步A/B技术短试真实执行，结果未参与候选选择。"
+  ],
+  "main_comparison_note_cn": "最终两个seed均为匹配96次A/B辅助更新。对照A是实际更新过的模型，201/204，不能用F的204/204替代。初次修正的seed88137代表选于256步，与最后96步修正的跨阶段比较不用于纯粹预算归因。",
+  "remaining_items_cn": [
+    "公告文字的败局绝对差与负分例子矛盾；超时70/50例子不给胜利176分，而现有原生规则判HP较高者胜。需赛方明确资格赛奖金是否仅限KO；本轮四场全KO分数不受歧义影响。",
+    "当前可取得的课程Arena为Public PracticeR2：本地直接PPO ZIP不是它要求的外层submission/内层agent容器。原版导入、静态检查、Actor开始/结束都存在受禁校验路径；未执行或伪造。",
+    "需确认赛方最终加载器与动作表读取方式，以及正式PvE开局/端口和PvP offset/回合安排；本地P1offset0四场与双端口0/12只是已明确标记的条件，未冒充官方完整赛制。",
+    "现有sye6308没有IPython；Notebook代码单元compile且共享CLI加载、训练短试、录像和导出真实运行。GUI RunAll未在本环境声称通过。"
+  ],
+  "selected_experience_note_cn": "精选数据约42.4MiB，共10条F能力保留、2条条件性成功续控及8条扩大覆盖的F保留。不是全量训练缓存；两seed共享，不声称独立发现。失败/不适用记录用于筛选与诊断，未伪装成最优标签或PPO优势。",
+  "zip_loading_result_cn": "同一个group10_Ryu.zip实际通过独立PPO.load、固定80输入、连续96调用、双实例隔离、四场原生终局一致性及公开文件本身双端口自对战。它可在本仓库运行；不能原样交给现有R2外层导入器后声称官方验收通过。",
+  "notebook_entry_cn": "打开notebooks/working/sye6308_group10_1110.ipynb，默认MODE=demo、MODEL_CHOICE=F。research只切换整个研究模型，不按比赛条件换权重。训练默认关闭。",
+  "final_decision_cn": "交付F。两次有依据的修正已结束，新增资格赛得分不能抵消PvP成类退化；不启动第三次训练。单ZIP本地可运行，现有R2外层提交格式尚不兼容，等待赛方最终接口确认。",
+  "cleanup": {
+    "scope": "Only redundant files inside this task. Core repository, ROM, F/reference and unrelated prior changes untouched.",
+    "removed_files": [
+      {
+        "path": "reports/competition_delivery/control_pvp_games.json",
+        "bytes": 229753
+      },
+      {
+        "path": "reports/competition_delivery/retained_pvp_games.json",
+        "bytes": 521572
+      },
+      {
+        "path": "reports/competition_delivery/known204_seed88131.json",
+        "bytes": 993518
+      },
+      {
+        "path": "reports/competition_delivery/opening_attribution.json",
+        "bytes": 14080
+      },
+      {
+        "path": "reports/competition_delivery/final_model_pairs.json",
+        "bytes": 3014
+      },
+      {
+        "path": "reports/competition_delivery/single_zip_games.json",
+        "bytes": 14693
+      },
+      {
+        "path": "reports/competition_delivery/single_zip_local.json",
+        "bytes": 815
+      },
+      {
+        "path": "reports/competition_delivery/single_zip_selfplay.json",
+        "bytes": 1248
+      },
+      {
+        "path": "reports/competition_delivery/supplemental_CPU96.json",
+        "bytes": 54443
+      },
+      {
+        "path": "reports/competition_delivery/qualification_ChunLi_2.mp4",
+        "bytes": 1928351
+      },
+      {
+        "path": "reports/competition_delivery/qualification_Ryu_2.mp4",
+        "bytes": 1322343
+      },
+      {
+        "path": "reports/competition_delivery/qualification_Ryu_4.mp4",
+        "bytes": 3441054
+      },
+      {
+        "path": "reports/competition_delivery/qualification_Ryu_8.mp4",
+        "bytes": 3847651
+      },
+      {
+        "path": "artifacts/competition_delivery/entry_smoke/seed88131/control/updates_8/bank.pt",
+        "bytes": 26531348
+      },
+      {
+        "path": "artifacts/competition_delivery/entry_smoke/seed88131/response/updates_8/bank.pt",
+        "bytes": 26531284
+      },
+      {
+        "path": "artifacts/competition_delivery/pvp_coverage_fit/seed88131/control/updates_96/bank.pt",
+        "bytes": 44454420
+      },
+      {
+        "path": "artifacts/competition_delivery/pvp_coverage_fit/seed88137/control/updates_96/bank.pt",
+        "bytes": 44454420
+      },
+      {
+        "path": "artifacts/competition_delivery/retained_response_fit/seed88131/control/updates_256/bank.pt",
+        "bytes": 26531412
+      },
+      {
+        "path": "artifacts/competition_delivery/retained_response_fit/seed88131/control/updates_96/bank.pt",
+        "bytes": 26531412
+      },
+      {
+        "path": "artifacts/competition_delivery/retained_response_fit/seed88131/response/updates_256/bank.pt",
+        "bytes": 26531412
+      },
+      {
+        "path": "artifacts/competition_delivery/retained_response_fit/seed88131/response/updates_96/bank.pt",
+        "bytes": 26531348
+      },
+      {
+        "path": "artifacts/competition_delivery/retained_response_fit/seed88137/control/updates_256/bank.pt",
+        "bytes": 26531412
+      },
+      {
+        "path": "artifacts/competition_delivery/retained_response_fit/seed88137/control/updates_96/bank.pt",
+        "bytes": 26531412
+      },
+      {
+        "path": "artifacts/competition_delivery/retained_response_fit/seed88137/response/updates_96/bank.pt",
+        "bytes": 26531348
+      },
+      {
+        "path": "artifacts/competition_delivery/seed88131/control/updates_256/bank.pt",
+        "bytes": 26531412
+      },
+      {
+        "path": "artifacts/competition_delivery/seed88131/control/updates_96/bank.pt",
+        "bytes": 26531412
+      },
+      {
+        "path": "artifacts/competition_delivery/seed88131/response/updates_96/bank.pt",
+        "bytes": 26531348
+      },
+      {
+        "path": "artifacts/competition_delivery/ineligible_F_reference.pt",
+        "bytes": 27361736
+      },
+      {
+        "path": "artifacts/competition_delivery/shared_experience.pt",
+        "bytes": 26524424
+      },
+      {
+        "path": "artifacts/competition_delivery/pvp_coverage_collection/episodes.pt",
+        "bytes": 17918500
+      }
+    ],
+    "removed_bytes": 491462595,
+    "preserved": "20 selected legal continuous episodes, six research/control inference weights, one F delivery ZIP, raw small diagnostics, three useful local resume banks, six complete curated videos."
+  }
+}

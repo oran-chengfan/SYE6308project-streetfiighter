@@ -4,7 +4,7 @@ Trusted local sources and tensors only. No submission or Arena acceptance claim.
 Native observations, six-frame inputs and round outcomes match the course.
 """
 from __future__ import annotations
-import base64,copy,io,itertools,json,pickle,sys,tempfile,types,zipfile
+import base64,copy,io,itertools,json,pickle,random,sys,tempfile,time,types,zipfile
 from collections import deque
 from pathlib import Path
 import gymnasium as gym
@@ -16,14 +16,63 @@ OUT=ROOT/'artifacts'
 TARGET=ROOT/'models/counter_ryu_final/agent.pt'
 _MODULE_IDS=itertools.count()
 GAME='StreetFighterIISpecialChampionEdition-Genesis'
-CHARACTERS=('Ryu','EHonda','Blanka','Guile','Ken','ChunLi','Zangief','Dhalsim','MBison','Sagat','Balrog','Vega')
+from experiments.league_adaptive.characters import CHARACTERS
 COMMON=dict(ruleset='hyper',speed_stars=2,decision_frames=6,position_scale=1024.,max_round_frames=7200)
+
+
+def same_state(a, b):
+    """Direct runtime comparisons; observations and random state are not files."""
+    if isinstance(a, np.ndarray):
+        return isinstance(b, np.ndarray) and np.array_equal(a, b)
+    if isinstance(a, torch.Tensor):
+        return isinstance(b, torch.Tensor) and torch.equal(a, b)
+    if isinstance(a, dict):
+        return a.keys() == b.keys() and all(same_state(a[k], b[k]) for k in a)
+    if isinstance(a, (list, tuple)):
+        return len(a) == len(b) and all(same_state(x, y) for x, y in zip(a, b))
+    return a == b
+
+
+def save_fight(env, actor, additional_actors=None):
+    """Simulator, both visible histories, controller and all acting RNG state."""
+    result=dict(env=env.save(), actor=copy.deepcopy(actor.get_state()), python=random.getstate(),
+                numpy=np.random.get_state(), torch=torch.random.get_rng_state().clone())
+    if additional_actors:
+        result['additional_actors']={name:copy.deepcopy(a.get_state()) for name,a in additional_actors.items()}
+    return result
+
+
+def restore_fight(env, actor, saved, additional_actors=None):
+    observation = env.restore(saved['env'])
+    actor.set_state(copy.deepcopy(saved['actor']))
+    if set(saved.get('additional_actors',{}))!=set(additional_actors or {}):
+        raise ValueError('Restore every saved additional policy history')
+    for name,a in (additional_actors or {}).items():
+        a.set_state(copy.deepcopy(saved['additional_actors'][name]))
+    random.setstate(saved['python']); np.random.set_state(saved['numpy']); torch.random.set_rng_state(saved['torch'])
+    restored, original = save_fight(env, actor, additional_actors), copy.deepcopy(saved)
+    # NativeGame independently verifies restored RAM, RGB, readings and time.
+    # Serialized engine bookkeeping need not be byte-identical after restore.
+    restored['env']['game'].pop('state'); original['env']['game'].pop('state')
+    if not same_state(original, restored):
+        raise RuntimeError('Restored simulator/history/controller/random state differs')
+    return observation
 
 
 def write(path,value):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     tmp=path.with_suffix(path.suffix+'.writing')
-    tmp.write_text(json.dumps(value,indent=2,ensure_ascii=False)+'\n');tmp.replace(path)
+    tmp.write_text(json.dumps(value,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+    # Windows readers and indexers can briefly deny replacement. Keep the
+    # previous complete document available, and bound retries to one second.
+    for attempt in range(21):
+        try:
+            tmp.replace(path)
+            return
+        except PermissionError as error:
+            if getattr(error,'winerror',None) not in (5,32) or attempt==20:
+                raise
+            time.sleep(.05)
 
 
 def setup():
@@ -129,10 +178,14 @@ def load_actor(path):
     if Path(path).suffix=='.zip':
         with zipfile.ZipFile(path) as archive:
             legacy='spec.json' in archive.namelist()
+            definition=(json.loads(archive.read('counter_ryu_definition.json'))
+                if 'counter_ryu_definition.json' in archive.namelist() else None)
         if legacy:return load_legacy(path)
         from stable_baselines3 import PPO
         definition_path=Path(path).parent/'policy_definition.json'
-        definition=json.loads(definition_path.read_text())
+        if definition is None:definition=json.loads(definition_path.read_text())
+        elif definition_path.exists() and definition!=json.loads(definition_path.read_text()):
+            raise ValueError('Embedded and companion policy definitions disagree')
         model=PPO.load(path,device='cpu')
         if model.action_space.n!=len(definition['actions']) or model.observation_space!=spaces(definition):
             raise ValueError('Portable policy and local observation/action definition disagree')
@@ -162,15 +215,15 @@ class Side:
 class NativeGame:
     def __init__(self):
         self.engine=None;self.starts={};self.raw={};self.elapsed=0;self.key=None;self.on_frame=None
+        self.setup_frames=0;self.held=((),())
         for path in (ROOT/'assets/starts').glob('*.npz'):
             with np.load(path,allow_pickle=False) as data:
                 meta=json.loads(data['metadata'].tobytes().decode())
-                if meta['character']!='Ryu':raise ValueError('Only Ryu starts belong in this project')
-                key=(meta['mode'],int(meta['stars']),'Ryu')
+                key=(meta['mode'],int(meta['stars']),meta.get('p1_character','Ryu'),meta['character'])
                 if key in self.starts:raise ValueError('Duplicate native start')
                 self.starts[key]=dict(state=data['state'].tobytes(),rgb=data['rgb'].copy(),ram=data['ram'].copy(),
                     readings=meta['readings'],definitions=meta['definitions'],fps=meta['fps'],buttons=meta['buttons'])
-        if not all((mode,star,'Ryu') in self.starts for mode,star in [('pvp',1),*[('pve',s) for s in range(1,9)]]):
+        if not all((mode,star,'Ryu','Ryu') in self.starts for mode,star in [('pvp',1),*[('pve',s) for s in range(1,9)]]):
             raise RuntimeError('Required Ryu starts are missing from assets/starts')
     def _create(self):
         import stable_retro as retro
@@ -198,9 +251,14 @@ class NativeGame:
             self.engine.reset()
         finally:sys.setprofile(old_profile)
         self.buttons=list(self.engine.buttons);self.fps=float(self.engine.em.get_screen_rate())
+        self.cold_state=bytes(self.engine.em.get_state())
     def _physical_restore(self,saved):
         engine=self.engine;engine.em.set_state(saved['state'])
-        for player in range(2):engine.em.set_button_mask(np.zeros(engine.num_buttons,np.uint8),player)
+        self.held=tuple(tuple(k) for k in saved.get('held',((),())))
+        for player in range(2):
+            mask=np.zeros(engine.num_buttons,np.uint8)
+            for name in self.held[player]:mask[self.buttons.index(name)]=1
+            engine.em.set_button_mask(mask,player)
         engine.data.reset()
         for name,spec in self.definitions.items():engine.data.set_variable('boot_'+name,dict(spec))
         engine.data.update_ram()
@@ -208,15 +266,26 @@ class NativeGame:
         self.raw=self.read()
         if self.raw!=saved['readings']:raise RuntimeError('Restored native readings differ')
         self.rgb=saved['rgb'].copy();engine.img=self.rgb.copy();engine.ram=None
-    def open(self,mode='pvp',stars=1,character='Ryu'):
+    def open(self,mode='pvp',stars=1,character='Ryu',p1_character='Ryu'):
         if self.engine is None:self._create()
-        key=(mode,int(stars),character);saved=self.starts[key];self.definitions=saved['definitions']
+        # Legacy callers specify the P2 character. New callers explicitly name
+        # both physical controller identities, independently of screen side.
+        key=(mode,int(stars),p1_character,character)
+        if mode not in ('pvp','pve') or not 1<=int(stars)<=8 or any(c not in CHARACTERS for c in key[2:]):
+            raise ValueError('Invalid native match configuration')
+        if key in self.starts:saved=self.starts[key]
+        else:
+            from experiments.league_adaptive.native_setup import NativeSetup
+            self.definitions=self.starts[('pvp',1,'Ryu','Ryu')]['definitions']
+            saved=NativeSetup(self,OUT/'native_starts').start(key)
+        self.definitions=saved['definitions']
         if self.buttons!=saved['buttons'] or abs(self.fps-saved['fps'])>1e-6:raise RuntimeError('Native controller/fps mismatch')
         self._physical_restore(saved);self.key=key;self.elapsed=0;self.on_frame=None
         self.wins=(self.raw['p1_wins'],self.raw['p2_wins'])
         self._validate()
     def _validate(self):
-        if self.raw['p1_char']!=0 or self.raw['p2_char']!=CHARACTERS.index(self.key[2]):raise RuntimeError('Native character identity mismatch')
+        if any(self.raw[f'p{p}_char']!=CHARACTERS.index(self.key[p+1]) for p in (1,2)):
+            raise RuntimeError('Native character identity mismatch')
         if self.key[0]=='pve' and any(self.raw[k]!=self.key[1]-1 for k in ('difficulty_menu','difficulty_fight')):
             raise RuntimeError('Native CPU difficulty mismatch')
     def read(self):return {name:int(self.engine.data.lookup_value('boot_'+name)) for name in self.definitions}
@@ -225,6 +294,7 @@ class NativeGame:
         action=np.zeros(2*len(self.buttons),np.int8)
         for port,keys in enumerate((k1,k2)):
             for name in keys:action[port*len(self.buttons)+self.buttons.index(name)]=1
+        self.held=(tuple(k1),tuple(k2))
         before=self.raw;self.rgb,*_=self.engine.step(action);self.raw=self.read();self.elapsed+=1;self._validate()
         h1,h2=self.raw['p1_hp'],self.raw['p2_hp'];winner=reason=None
         if min(h1,h2)<0:winner=('draw' if h1<0 and h2<0 else 'p2' if h1<0 else 'p1');reason='signed_hp_ko'
@@ -237,9 +307,10 @@ class NativeGame:
         return self.raw,winner,reason
     def snapshot(self):
         return dict(state=bytes(self.engine.em.get_state()),ram=np.asarray(self.engine.get_ram(),np.uint8).copy(),
-            rgb=self.rgb.copy(),readings=dict(self.raw),elapsed=self.elapsed,key=self.key,wins=self.wins)
+            rgb=self.rgb.copy(),readings=dict(self.raw),elapsed=self.elapsed,key=self.key,wins=self.wins,held=self.held)
     def restore(self,saved):
-        if self.key!=saved['key']:self.open(*saved['key'])
+        if self.key!=saved['key']:
+            mode,stars,p1,p2=saved['key'];self.open(mode,stars,p2,p1)
         self._physical_restore(saved);self.elapsed=saved['elapsed'];self.wins=saved['wins']
     def close(self):
         if self.engine is not None:self.engine.close();self.engine=None;self.work.cleanup()
