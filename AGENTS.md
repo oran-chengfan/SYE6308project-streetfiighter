@@ -2,7 +2,7 @@
 
 ## 2026-11-16 主分支交付状态（覆盖下文过时的模型与训练方向）
 
-当前默认交付为 F：`models/competition_delivery/group10_Ryu.zip`，原始权重为 `models/ryu_targeted_delivery/feedback_candidate.pt`。它是 Ryu 循环 PPO 加已验证连续轨迹整合，不再按早期 DDQN/重新选角安排自动启动研究。默认运行 `notebooks/working/sye6308_group10_1110.ipynb`，保留课程53格结构；训练默认关闭。原 `models/counter_ryu_final/` 是更早的历史参考，继续保留，不冒充当前F。
+当前默认交付为 F：`models/competition_delivery/group10_Ryu.zip`，原始权重为 `models/ryu_targeted_delivery/feedback_candidate.pt`。它是 Ryu 循环 PPO 加已验证连续轨迹整合，不再按早期 DDQN/重新选角安排自动启动研究。默认运行 `notebooks/working/sye6308_group10_1117.ipynb`，保留课程53格结构；训练默认关闭。原 `models/counter_ryu_final/` 是更早的历史参考，继续保留，不冒充当前F。
 
 F 的固定记录为全角色96/96 CPU KO、已知PvP204/204、公告四场资格赛1136分；均非未知对手保证。单zip本地可运行，但不符合存档R2外层容器接口，官方Arena未验收。广泛有效走位与持续能力积累尚未实现。后续实验在 `win/*` 分支开展，失败候选不自动替换F。
 
@@ -18,7 +18,7 @@ main 是精简交付，不包含所有研究权重及轨迹缓存。历史报告
 
 ## 任务边界与证据
 
-项目名为 **Counter-Ryu**。只研究 **Ryu vs Ryu**，同一份权重兼顾 PvE 1–8 星与 PvP P1/P2。不能擅自扩大到 Ken、Sagat 等角色。P1/P2 是控制器身份，左右位置会交换；PvE 的受训 agent 为 P1。
+项目名为 **Counter-Ryu**。课程允许训练场提供的全部角色；当前交付固定己方Ryu，同一份权重应对不同角色，并兼顾PvE与PvP P1/P2。公告资格赛为春丽2星、己方同角色2/4/8星共四场；全角色96条件属于扩展研究面板。P1/P2是控制器身份，左右位置会交换；当前本地PvE入口为P1。
 
 课程方允许 PPO 以外算法，条件是相应适配训练、打包和加载，并让最终 agent 通过课程 Arena 评估。PPO 是模板默认实现，不是课程的算法限制；本地原始权重加载不等于官方最终包验收。禁止文件哈希的要求继续适用。
 
