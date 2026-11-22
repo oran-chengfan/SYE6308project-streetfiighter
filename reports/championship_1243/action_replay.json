@@ -1,0 +1,7 @@
+{
+  "policy": "frozen 1243 challenger",
+  "rounds": 4,
+  "individual_actions_checked": 3696,
+  "action_differences": 0,
+  "all_terminal_hp_and_end_reasons_equal": true
+}

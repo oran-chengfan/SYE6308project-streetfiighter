@@ -1,8 +1,16 @@
 # Counter-Ryu · SYE6308
 
-本主分支默认运行已验证的 **F / feedback_candidate** 交付。己方固定 Ryu，同一份权重用于 PvE 与 PvP、P1 与 P2。方法是循环 PPO 基础加经过完整对局验证的连续轨迹监督整合；不能把全部提升归给 PPO 算法名称。
+## Championship 提交
 
-## 运行与交付
+**首选 1243 分 Ryu。** 正式比赛只提交这一份完整外层 ZIP。同一份权重参加四场 PvE 资格赛和换边 PvP。在课程 Arena 中，将下载好的文件路径填入 `SUBMISSION_A`。[下载 Group_10.zip](models/championship_1243/Group_10.zip)
+
+资格赛四场均 KO，春丽二星和 Ryu 二、四、八星分别剩 176、176、84、103 血，共 1243 分。冻结后的换边 PvP 为 18/20（P1 8/10，P2 10/10）。这份 ZIP 已在 Mac 通过课程 Public Practice Arena R2 四局自检。打包前后 3,696 次动作选择逐一相同，四局终局血量和结束原因均一致。[Arena 回执](reports/championship_1243/receipt.json) · [动作核对](reports/championship_1243/action_replay.json) · [Windows 选型报告](https://github.com/oran-chengfan/SYE6308project-streetfiighter/blob/win/ryu-p1-pressure/reports/ryu_p1_pressure/summary.json)
+
+**备用为 11 月 19 日冻结的 B**（1136 分，四场 KO）。若改用备用，取 Mac 项目 `6308_project` 中已经通过 R2 四局自检的完整文件 `artifacts/arena_frozen_B_20261120/submissions/Group_10_20261120T133215_509448Z_submission.zip`。这份备用外层包保存在 Mac；Windows 分支提供冻结权重和训练记录。[冻结 B 的来源](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-competition-final)
+
+## Notebook 演示与续训
+
+1117 Notebook 默认演示历史基线 **F**。`MODEL_CHOICE='research'` 选择 **1141 分走位研究模型**，用于复看走位与对照实验。比赛使用上方的 1243 分提交包。
 
 打开 [课程结构 Notebook](notebooks/working/sye6308_group10_1117.ipynb)，选择已经配置的 `sye6308` 内核后“全部运行”。它保留上游课程的 53 个单元格结构，默认加载 F，运行Ryu 四星、八星两场 PvE 和换边两场 PvP，显示完整录像并保留终局后一秒。第6节切换 `PVE_EVALUATION_SCOPE='qualification'` 可运行公告四场并在全部KO时显示得分。1117版与1110版默认权重一致，更新的是入口与说明。默认不训练；开启第 5 节或第 9.4 节可执行真实循环 PPO 续训。新结果写入 `artifacts/`，不会覆盖 F。
 
@@ -11,7 +19,7 @@
 - [资格赛交付记录](reports/competition_delivery/release.json)、[本地加载检查](reports/competition_delivery/compatibility.json)、[完整实验汇总](reports/competition_delivery/summary.json)。
 - 首次配置参考 [Windows 环境交接](initial_readme_1022.md)；它记录的是十月历史基线，当前入口与成绩以本页为准。已有环境无需重装。
 
-## 已取得的成果与边界
+## 历史基线 F
 
 | 条件 | F 已记录结果 |
 |---|---:|
@@ -19,17 +27,17 @@
 | 已知 PvP 回归条件 | 204/204，P1/P2 各 102/102 |
 | 公告四场资格赛，当前 P1、offset0 开局 | 4/4 KO，1136 分 |
 
-这些是固定条件的结果，不是对未知同学模型的胜率保证。204 场主要由脚本对手条件构成，并非 204 个独立的强神经对手。F 仍大量使用技能输入，稳定主动走位、跨打法适应与持续能力积累尚未得到充分证明。后续研究没有得到值得替换 F 的模型，不把不同候选的局部成功相加。
+这些是固定条件的结果，不是对未知同学模型的胜率保证。204 场主要由脚本对手条件构成，并非 204 个独立的强神经对手。F 仍大量使用技能输入，稳定主动走位、跨打法适应与持续能力积累尚未得到充分证明。
 
 四场资格赛录像：[春丽2星](reports/competition_delivery/F_qualification_ChunLi_2.mp4)、[Ryu2星](reports/competition_delivery/F_qualification_Ryu_2.mp4)、[Ryu4星](reports/competition_delivery/F_qualification_Ryu_4.mp4)、[Ryu8星](reports/competition_delivery/F_qualification_Ryu_8.mp4)。自身剩血依次为154、176、84、18；四场均在计时结束前 KO。
 
-**官方 Arena 尚未通过。** 此单 zip 已通过本地加载、连续推理和完整对局检查，但不满足当前存档 Public Practice R2 的外层提交容器接口；最终比赛加载接口仍须按赛方实际版本确认。不要把本地可运行写成官方已验收。
+F 的单 ZIP 用于本地推理；主线的课程 R2 比赛提交包见页首。
 
-## 走位研究模型与完整对局
+## 1141 分走位研究模型与完整对局
 
 在 1117 Notebook 第 1 节首个代码格把 `MODEL_CHOICE = 'F'` 改为 `MODEL_CHOICE = 'research'`，然后从头全部运行。第 6 节运行所选模型的 PvE，第 8 节让同一模型作为 P1 和 P2 对战固定神经对手。研究导出使用同目录的策略包和动作、观察定义。[研究推理目录](models/retained_to_f/runtime)
 
-| Windows 已记录条件 | 比赛模型 F | 走位学生 |
+| Windows 已记录条件 | 历史基线 F | 1141 分走位学生 |
 |---|---:|---:|
 | 公告四场资格赛 | 1136 分，4 KO | 1141 分，4 KO |
 | 全角色与星级 CPU | 96/96 KO | 61/96 KO |
@@ -43,9 +51,7 @@
 
 ## 主分支与研究分支
 
-本次是从已审核代码和 `win/competition-delivery` 中选择交付内容整合到 main，不是把所有实验分支整体合并。保留原课程文件、论文、环境补丁、必要模型和简洁结果；失败候选、训练缓存、大量中间录像保留在相应研究分支或 Windows 本地。报告中的历史候选路径可能仅存在于原研究分支。
-
-F 的来源见 [win/ryu-targeted-delivery](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-targeted-delivery)；比赛交付详见 [win/competition-delivery](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/competition-delivery)。后续走位研究见 [win/conditional-footwork](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/conditional-footwork)，未晋级。
+主分支保存比赛交付、教学 Notebook 和精选研究证据。训练过程、对手权重和历史候选保存在各自的研究分支。F 的开发过程与当时的资格赛记录可在原分支查阅。[F 的训练](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-targeted-delivery) · [F 的交付记录](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/competition-delivery)
 
 Notebook 的历史轨迹整合复现开关需要原研究环境的经验数据，精简主分支不包含这些缓存；普通 PPO 续训不需要它们。动作名称表示发送的按键序列，不等同于游戏中实际成功发动的招式。
 
