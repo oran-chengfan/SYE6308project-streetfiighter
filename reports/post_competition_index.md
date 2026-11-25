@@ -8,7 +8,7 @@
 | 冻结 B | 主监督分支 1136 分、四场 KO、CPU 83/96、已知 PvP 185/204；原冻结面板 8/10（P1 3/5、P2 5/5）。保留为 1243 分模型的直接基线。 | [冻结权重与加载入口](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-competition-final/models/ryu_competition_final) · [配置、逐局与录像](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-competition-final/reports/ryu_competition_final) |
 | 1243 分比赛模型 | 在冻结 B 后研究 P1 抗压与保持，最后模型资格赛四场 KO、已知 PvP 196/204。冻结测试为 18/20，P1 8/10、P2 10/10。同一面板 B 为 15/20（6/10、9/10），F 为 15/20（7/10、8/10）。 | [Windows 配置](https://github.com/oran-chengfan/SYE6308project-streetfiighter/blob/win/ryu-p1-pressure/configs/ryu_p1_pressure.json) · [模型与本地加载入口](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-p1-pressure/models/ryu_p1_pressure) · [逐局与成对录像](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-p1-pressure/reports/ryu_p1_pressure) |
 
-GitHub 保存 1243 分模型经 Mac R2 四局自检的外层包和对应回执。Kaggle／TA 最终提交原件与配套回执待 Mac 补齐。Windows 的 `models/ryu_p1_pressure/policy.zip` 供本地加载。 [R2 外层包](../models/championship_1243/Group_10.zip) · [R2 回执](championship_1243/receipt.json) · [3,696 次动作核对](championship_1243/action_replay.json)
+GitHub 保存 1243 分模型经 Mac R2 四局自检的外层包和对应回执。课程 Python 3.13 环境请下载 [Kaggle 外层原件](../models/championship_1243/kaggle/Group_10.zip)，对应 [TA Notebook 回执](championship_1243/kaggle/ta_arena_receipt.json) 及 [环境与四局记录](championship_1243/kaggle/ta_notebook_verification.json)。Windows 的 `models/ryu_p1_pressure/policy.zip` 供本地加载。 [R2 外层包](../models/championship_1243/Group_10.zip) · [R2 回执](championship_1243/receipt.json) · [3,696 次动作核对](championship_1243/action_replay.json)
 
 ## 有用的发现及反例
 

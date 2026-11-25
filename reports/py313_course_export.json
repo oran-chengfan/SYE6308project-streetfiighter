@@ -9,7 +9,7 @@
       "preserved_unchanged": true
     },
     "ta_kaggle": {
-      "evidence_status": "User reports an earlier TA validation. A fresh fetch found no matching original artifacts in the remote branches. The original bundle was unavailable for local cold startup during this task.",
+      "evidence_status": "The original November 23 Kaggle export and TA-notebook self-check records were recovered on Mac. The four terminal records agree across receipts. Both players’ actions match the Mac decision log at all 1,848 steps.",
       "handoff_source_directory": "artifacts/arena_1243_cross_python_20261123/kaggle",
       "required_original_files": [
         "Group_10.zip",
@@ -26,7 +26,14 @@
         "stable-baselines3": "2.7.0",
         "stable-retro": "1.0.1",
         "gym": "0.26.2"
-      }
+      },
+      "archived_files": [
+        "models/championship_1243/kaggle/Group_10.zip",
+        "reports/championship_1243/kaggle/ta_arena_receipt.json",
+        "reports/championship_1243/kaggle/ta_notebook_verification.json",
+        "reports/championship_1243/kaggle/receipt.json",
+        "reports/championship_1243/kaggle/decisions.jsonl"
+      ]
     }
   },
   "repair": [

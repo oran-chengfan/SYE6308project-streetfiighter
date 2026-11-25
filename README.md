@@ -6,7 +6,7 @@
 
 ### 运行已验收的 1243 分模型
 
-在 TA 指定的 Kaggle Arena notebook 中，将参赛包输入指向**同一版已验收的外层 `Group_10.zip`**，使用 TA 的换边设置运行。此前 Kaggle TA 验收记录覆盖四局、双方共 3,696 次动作。该版外层原件及配套的 `ta_arena_receipt.json`、`ta_notebook_verification.json` 待 Mac 同步。当前 GitHub 可下载的 **Mac R2 版**仍有自己的回执。 [历史 R2 版与回执](#比赛交付与复跑)
+下载 [Kaggle 版 Group_10.zip](models/championship_1243/kaggle/Group_10.zip)，原样挂载到 TA 提供的可选角色 Arena Notebook。课程默认角色为春丽，本包实际载入 Ryu。11 月 23 日的自检用同一提交包交换 P1/P2，在 offset 0 和 12 各跑两局，共记录 3,696 次动作选择。 [TA Notebook 回执](reports/championship_1243/kaggle/ta_arena_receipt.json) · [实测环境与四场终局](reports/championship_1243/kaggle/ta_notebook_verification.json)
 
 ### 训练并导出自己的第一个模型
 
@@ -24,12 +24,12 @@ Windows 原生 3.12 已实测短训、导出和换边对局。Windows 3.13 已�
 
 | 版本 | 归档用途 | 入口 |
 | --- | --- | --- |
-| **1243 分 Ryu** | 比赛模型。GitHub 保存经 Mac Public Practice Arena R2 四局自检的外层包 | [R2 Group_10.zip](models/championship_1243/Group_10.zip) · [R2 回执](reports/championship_1243/receipt.json) |
+| **1243 分 Ryu** | 比赛模型，Python 3.13 课程环境已通过四局换边自检 | [Kaggle Group_10.zip](models/championship_1243/kaggle/Group_10.zip) · [TA Notebook 回执](reports/championship_1243/kaggle/ta_arena_receipt.json) |
 | **F，1136 分** | 比赛备用、历史强度基线、Notebook 默认模型 | [本地推理 zip](models/competition_delivery/group10_Ryu.zip) · [交付结果](reports/competition_delivery/summary.json) |
 | **冻结 B，1136 分** | 1243 分模型的直接比较基线 | [冻结 B 的权重和实验结果](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-competition-final) |
 | **1141 分走位模型** | 研究主动调位的收益、反例和整局代价 | [推理目录](models/retained_to_f/runtime) · [逐局结果](reports/retained_to_f/games.json) |
 
-1243 分模型四场资格赛均 KO。春丽二星和 Ryu 二、四、八星分别剩 176、176、84、103 血。冻结换边 PvP 为 18/20（P1 8/10，P2 10/10）。Mac 的 R2 记录核对了打包前后 3,696 次动作选择及四场终局。Kaggle／TA 最终外层原件及对应回执待 Mac 补交。 [动作核对](reports/championship_1243/action_replay.json) · [Windows 选型报告](https://github.com/oran-chengfan/SYE6308project-streetfiighter/blob/win/ryu-p1-pressure/reports/ryu_p1_pressure/summary.json)
+1243 分模型四场资格赛均 KO。春丽二星和 Ryu 二、四、八星分别剩 176、176、84、103 血。冻结换边 PvP 为 18/20（P1 8/10，P2 10/10）。Mac 的 R2 记录核对了打包前后 3,696 次动作选择及四场终局。Kaggle 原始动作记录与 Mac 记录逐步一致。历史 Mac 环境复盘可取 [R2 外层包](models/championship_1243/Group_10.zip) 和 [R2 回执](reports/championship_1243/receipt.json)。 [Kaggle 逐步动作](reports/championship_1243/kaggle/decisions.jsonl) [动作核对](reports/championship_1243/action_replay.json) · [Windows 选型报告](https://github.com/oran-chengfan/SYE6308project-streetfiighter/blob/win/ryu-p1-pressure/reports/ryu_p1_pressure/summary.json)
 
 复跑优先使用已配置的 1117 Notebook。赛后索引收录课程 PPO、F、走位师生、B 和 1243 的谱系，也列出了失败实验与 Windows 独有的恢复输入。 [运行 Notebook](notebooks/working/sye6308_group10_1117.ipynb) · [探索与复跑索引](reports/post_competition_index.md) · [赛后验证记录](reports/post_competition_checks.json)
 

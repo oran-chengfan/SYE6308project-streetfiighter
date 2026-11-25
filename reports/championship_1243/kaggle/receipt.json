@@ -1,0 +1,147 @@
+{
+  "rounds": [
+    {
+      "round": 0,
+      "offset": 0,
+      "p1_agent": "A",
+      "p2_agent": "B",
+      "winner": "B",
+      "end_reason": "native_time_up",
+      "p1_hp": 4,
+      "p2_hp": 103,
+      "native_frames": 2775,
+      "decisions": 463,
+      "weights_unchanged": true
+    },
+    {
+      "round": 1,
+      "offset": 12,
+      "p1_agent": "A",
+      "p2_agent": "B",
+      "winner": "B",
+      "end_reason": "native_time_up",
+      "p1_hp": 60,
+      "p2_hp": 67,
+      "native_frames": 2774,
+      "decisions": 461,
+      "weights_unchanged": true
+    },
+    {
+      "round": 2,
+      "offset": 0,
+      "p1_agent": "B",
+      "p2_agent": "A",
+      "winner": "A",
+      "end_reason": "native_time_up",
+      "p1_hp": 4,
+      "p2_hp": 103,
+      "native_frames": 2775,
+      "decisions": 463,
+      "weights_unchanged": true
+    },
+    {
+      "round": 3,
+      "offset": 12,
+      "p1_agent": "B",
+      "p2_agent": "A",
+      "winner": "A",
+      "end_reason": "native_time_up",
+      "p1_hp": 60,
+      "p2_hp": 67,
+      "native_frames": 2774,
+      "decisions": 461,
+      "weights_unchanged": true
+    }
+  ],
+  "summary": {
+    "A": 2,
+    "B": 2,
+    "draw": 0,
+    "cutoff": 0
+  },
+  "training_performed": false,
+  "policy_weights_unchanged": true,
+  "actor_initial_hashes": [
+    "51a4cc4b73d88378be116507f32a67dbaed0333ed320e6d445c78b28521628c9",
+    "51a4cc4b73d88378be116507f32a67dbaed0333ed320e6d445c78b28521628c9"
+  ],
+  "actor_runtime_versions": [
+    {
+      "torch": "2.11.0+cpu",
+      "numpy": "2.1.3",
+      "gymnasium": "1.2.0",
+      "stable-baselines3": "2.7.0",
+      "stable-retro": "1.0.1"
+    },
+    {
+      "torch": "2.11.0+cpu",
+      "numpy": "2.1.3",
+      "gymnasium": "1.2.0",
+      "stable-baselines3": "2.7.0",
+      "stable-retro": "1.0.1"
+    }
+  ],
+  "latency": {
+    "A": {
+      "requests": 1848,
+      "mean_ms": 9.957448196431873,
+      "p95_ms": 10.820735999925544,
+      "max_ms": 16.46745700008978
+    },
+    "B": {
+      "requests": 1848,
+      "mean_ms": 9.911281545994537,
+      "p95_ms": 10.775431749937068,
+      "max_ms": 16.10261099995114
+    }
+  },
+  "same_package_interface_test": true,
+  "warnings": [],
+  "coverage": "Only these submitted agents, character matchup, offsets and ports were tested.",
+  "note": "Self-match is an interface check, not a skill benchmark. Rewards are never used for match scoring. Cutoffs are not wins.",
+  "status": "ARENA_SELF_CHECK_PASSED",
+  "rules_id": "sye6308-practice-v1",
+  "rules_sha256": "66c1428fead2d2ffdf4ce1f2ccae1c13a02236151f4d34b6979a97453f97d014",
+  "submissions": {
+    "A": {
+      "team_id": "Group_10",
+      "submission_sha256": "3486c3757eccefcd78090ec7c3ceca0853dd4e43e081ae0891d69190b3292fb9",
+      "agent_sha256": "1a4d78550d7294d322df14d99bfbf069e9aaf826ae15bf88bbfb007cac68e37d",
+      "character": "Ryu"
+    },
+    "B": {
+      "team_id": "Group_10",
+      "submission_sha256": "3486c3757eccefcd78090ec7c3ceca0853dd4e43e081ae0891d69190b3292fb9",
+      "agent_sha256": "1a4d78550d7294d322df14d99bfbf069e9aaf826ae15bf88bbfb007cac68e37d",
+      "character": "Ryu"
+    }
+  },
+  "framework_hashes": {
+    "input_contract_smoke.py": "ef5ed3f70a38b04635bbccf6a0a797a78f71cb497c5335ee760edde676963c96",
+    "lab_notebook.py": "f4f8247ef3fb7da42288c2c812663fb06d751fa045c039bf9cfb92b955ca530e",
+    "lab_review.py": "50f99416349385e47e887dad15e70691427de27e88b7f3e089645e8d8f01256e",
+    "run_lab.py": "a7b8ce0e859f75d2ad33630a64d2e1e3d6b1a4be260267eeda31dc5f57d75aeb",
+    "setup_sf2.py": "72ea28d9f4a0748be3daa07061cd58b6f00e1d8cbc299d9e03fc8efc5b0fb017",
+    "sf2_actions.py": "0d2fec98a6f9d279ec5f184dd26868bf0ce205cd35de647e7c5fabb46e03b01c",
+    "sf2_arena.py": "a96708c9455821046f26eefad2cb66b18846325af081e3c31306cb936976b4e8",
+    "sf2_arena_actor.py": "542364074b3763000bb053051381d87e08ac794f86ecd71207e379eb5431a1a6",
+    "sf2_arena_notebook.py": "6068a8834f4dfe6bdb3e5230639d8dd8c1cff372349f6da78f9afac30e82b4ad",
+    "sf2_arena_rpc.py": "30cf27badc7df190e7d5931a576dc35315b8ae91d848e82d0c8add28c083f312",
+    "sf2_boot.py": "b86da0f2533e25531fd8e0d2b66cba8162c089608da22c4c7f1337dddb3fa10d",
+    "sf2_bundle.py": "dc09e9589622b1049798e2d0fa0b0cc45f1460931cc7c23207a46325a0acf792",
+    "sf2_common.py": "42a7bca2426593b93c11c43196cd27298c44918bebc9d7c62650587e4504eaeb",
+    "sf2_env.py": "bdf0f8406c849a1f57af190e655f40ecbf1157e6d93ba6a57a5d5f103cb68389",
+    "sf2_game.py": "b592783a52e6b3090c09c51e0c4d19784eb87bb39f7f71c136bf0309747fe9fd",
+    "sf2_menu.py": "22591733041e8ff0d078cec9ced112c388f5282cf747ba02e81677d76b125a39",
+    "sf2_observation.py": "1ef611faa5f45eba37775a78860ea83eeddf727c71aec49a0b0a2f3795abd146",
+    "sf2_pvp_eval.py": "014e511008532658a16c118107508b76a448a32e4bcd475a5ba612abb5f21549",
+    "sf2_release.py": "21b61b3e40ba2340a0953cd3eca685c7a4dffd72ade7aacd59fc195b70750f45",
+    "sf2_start_cache.py": "2ae79b0cacb2e1c2bbf638a02ff6ffd25730394b071bc5d15d190563858b38b6",
+    "sf2_submission.py": "4b7048296af0f5e9d998d99bb54f64c1982ae277e5f8313366ff9bfb99d17753",
+    "sf2_video.py": "6727a6fbcb35539aabae51bfe7aa1e5a9d6fecd940f4f29db8aa7cf1d2e763b1"
+  },
+  "official_score": false,
+  "security_sandbox": false,
+  "rule_status": "DRAFT_FOR_TA_ACCEPTANCE_NOT_OFFICIAL_COURSE_RULES",
+  "timing_scope": "CPU actor RPC including preprocessing, inference and transport; early diagnostic snapshots may add cost."
+}

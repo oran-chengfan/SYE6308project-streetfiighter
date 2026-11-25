@@ -500,9 +500,8 @@
     "github_r2_outer": "models/championship_1243/Group_10.zip",
     "github_r2_receipt": "reports/championship_1243/receipt.json",
     "windows_local_runtime": "models/ryu_p1_pressure/policy.zip",
-    "missing_mac_material": [
-      "Kaggle／TA 最终外层 Group_10.zip 原件",
-      "与该原件相配套的提交或验收回执"
-    ]
+    "kaggle_outer": "models/championship_1243/kaggle/Group_10.zip",
+    "kaggle_ta_receipt": "reports/championship_1243/kaggle/ta_arena_receipt.json",
+    "kaggle_ta_verification": "reports/championship_1243/kaggle/ta_notebook_verification.json"
   }
 }

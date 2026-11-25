@@ -1,0 +1,73 @@
+{
+  "status": "ARENA_SELF_CHECK_PASSED",
+  "versions": {
+    "Python": "3.13.15",
+    "torch": "2.11.0+cpu",
+    "numpy": "2.1.3",
+    "gymnasium": "1.2.0",
+    "stable-baselines3": "2.7.0",
+    "stable-retro": "1.0.1",
+    "gym": "0.26.2"
+  },
+  "defaults": [
+    "ChunLi",
+    "ChunLi"
+  ],
+  "character": "Ryu",
+  "rounds": [
+    {
+      "round": 0,
+      "offset": 0,
+      "p1_agent": "A",
+      "p2_agent": "B",
+      "winner": "B",
+      "end_reason": "native_time_up",
+      "p1_hp": 4,
+      "p2_hp": 103,
+      "native_frames": 2775,
+      "decisions": 463,
+      "weights_unchanged": true
+    },
+    {
+      "round": 1,
+      "offset": 12,
+      "p1_agent": "A",
+      "p2_agent": "B",
+      "winner": "B",
+      "end_reason": "native_time_up",
+      "p1_hp": 60,
+      "p2_hp": 67,
+      "native_frames": 2774,
+      "decisions": 461,
+      "weights_unchanged": true
+    },
+    {
+      "round": 2,
+      "offset": 0,
+      "p1_agent": "B",
+      "p2_agent": "A",
+      "winner": "A",
+      "end_reason": "native_time_up",
+      "p1_hp": 4,
+      "p2_hp": 103,
+      "native_frames": 2775,
+      "decisions": 463,
+      "weights_unchanged": true
+    },
+    {
+      "round": 3,
+      "offset": 12,
+      "p1_agent": "B",
+      "p2_agent": "A",
+      "winner": "A",
+      "end_reason": "native_time_up",
+      "p1_hp": 60,
+      "p2_hp": 67,
+      "native_frames": 2774,
+      "decisions": 461,
+      "weights_unchanged": true
+    }
+  ],
+  "matches_previous_decisions": true,
+  "run_dir": "/kaggle/working/sf2_arena_practice_v1/arena_runs/20261123T144335_470232_self_check"
+}
