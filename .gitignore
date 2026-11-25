@@ -1,36 +1,5 @@
-# Local environments and generated output
-.venv/
-venv/
-.conda/
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 .DS_Store
-Thumbs.db
-.env
-.env.*
-!.env.example
-.vscode/
-.idea/
 artifacts/
-runtime/
-local/*
-!local/StreetFighterIISpecialChampionEdition-Genesis.md
-*.log
-*.writing
-
-# Store only the explicitly curated model files already in this directory.
-models/**/checkpoint_*
-models/**/optimizer*
-models/**/replay*
-*.mp4
-*.avi
-*.gif
-
-# No separate file identity/verification artifacts.
-*.sha256
-*.sha1
-*.md5
-SHA256SUMS
-SHA1SUMS
-MD5SUMS
