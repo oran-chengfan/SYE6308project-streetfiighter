@@ -62,7 +62,7 @@ class SequenceQPolicy(MultiInputActorCriticPolicy):
             self.features_extractor.visual[2]=nn.Sequential(
                 nn.LayerNorm(self.features_extractor.visual[1].out_features),nn.Tanh())
         self.register_buffer('physical_mirror', torch.tensor(self.action_mirror_list, dtype=torch.long))
-        count=self.action_space.n if self.internal_action_count is None else int(self.internal_action_count)
+        count=int(self.action_space.n if self.internal_action_count is None else self.internal_action_count)
         if self.deployment_action_indices is not None:
             indices=self.deployment_action_indices
             if len(indices)!=self.action_space.n or len(set(indices))!=len(indices) or min(indices)!=0 or max(indices)>=count:
@@ -279,7 +279,13 @@ class SequencePPOPolicy(SequenceQPolicy):
     estimate or replay return is treated as a PPO probability/value target.
     """
     probability_policy=True
-    action_temperature=1.
+
+    def __init__(self, *args, action_temperature=1., **kwargs):
+        self.action_temperature=float(action_temperature)
+        super().__init__(*args, **kwargs)
+
+    def _get_constructor_parameters(self):
+        return dict(super()._get_constructor_parameters(), action_temperature=self.action_temperature)
 
     def extract_features(self,observations,features_extractor=None):
         return torch.cat((self.encode_maps(observations),observations['position']),1)
@@ -315,7 +321,7 @@ class SequencePPOPolicy(SequenceQPolicy):
 
 
 def sequence_q_kwargs(definition):
-    return dict(features_extractor_class=VisibleHistoryEncoder, net_arch=dict(pi=[], vf=[]),
+    kwargs=dict(features_extractor_class=VisibleHistoryEncoder, net_arch=dict(pi=[], vf=[]),
         action_mirror=list(range(len(definition['actions']))) if definition.get('physical_actions') and not definition.get('facing_canonical') else mirror_indices(definition['actions']),
         memory_hidden=definition.get('memory_hidden', 128),
         trainable_visual=definition.get('trainable_visual',False),physical_actions=definition.get('physical_actions',False),
@@ -325,15 +331,16 @@ def sequence_q_kwargs(definition):
         deployment_action_indices=definition.get('deployment_action_indices'),internal_action_count=definition.get('internal_action_count'),
         internal_action_mirror=definition.get('internal_action_mirror'),
         physical_commands=compiled(definition['actions']) if definition.get('input_history') is not None else None)
+    if definition.get('kind')=='sequence_ppo':
+        kwargs['action_temperature']=float(definition.get('action_temperature',1.))
+    return kwargs
 
 
 def construct_sequence_q(definition):
     import gymnasium as gym
     cls=SequencePPOPolicy if definition['kind']=='sequence_ppo' else SequenceQPolicy
-    policy=cls(spaces(definition), gym.spaces.Discrete(len(definition['actions'])),
+    return cls(spaces(definition), gym.spaces.Discrete(len(definition['actions'])),
         lambda _:1e-4, **sequence_q_kwargs(definition))
-    if cls is SequencePPOPolicy:policy.action_temperature=float(definition.get('action_temperature',1.))
-    return policy
 
 
 def restrict_sequence_actions(source,indices,maximum_actions=64):

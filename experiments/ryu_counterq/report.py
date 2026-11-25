@@ -325,7 +325,8 @@ def publish_breakthrough(config,artifact,report):
             source=directory/'exports/frozen_candidate'
             destination=(ROOT/record['freeze']['models']['frozen_candidate']).parent/'standalone'/name
             destination.mkdir(parents=True,exist_ok=True)
-            for filename in ('policy.zip','inference.py','student_model.py','student_actions.py',
+            model_source='model.py' if (source/'model.py').is_file() else 'student_model.py'
+            for filename in ('policy.zip','inference.py',model_source,'student_actions.py',
                              'student_observation.py','policy_definition.json','runtime_versions.json'):
                 shutil.copyfile(source/filename,destination/filename)
             record['standalone_inference']=destination.relative_to(ROOT).as_posix()
@@ -1210,8 +1211,10 @@ def publish(configuration='configs/counterfactual_dqn.json',run_root=None,report
 
     for arm in config['comparison']['arms']:
         destination=ROOT/prefix/'standalone'/arm;destination.mkdir(parents=True,exist_ok=True)
-        for name in ('policy.zip','inference.py','student_model.py','student_actions.py','student_observation.py','policy_definition.json','runtime_versions.json'):
-            shutil.copyfile(ARTIFACT/'exports'/arm/name,destination/name)
+        source=ARTIFACT/'exports'/arm
+        model_source='model.py' if (source/'model.py').is_file() else 'student_model.py'
+        for name in ('policy.zip','inference.py',model_source,'student_actions.py','student_observation.py','policy_definition.json','runtime_versions.json'):
+            shutil.copyfile(source/name,destination/name)
     behavior=publish_behavior_movies(state['behavior'],REPORT)
 
     comparison={}

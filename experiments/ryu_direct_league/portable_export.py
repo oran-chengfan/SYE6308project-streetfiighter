@@ -1,27 +1,72 @@
 """Export raw SB3 weights and self-contained student sources, without course APIs."""
-import argparse,ast,json,subprocess,sys,tempfile,types
+import argparse,ast,inspect,json,subprocess,sys
 from pathlib import Path
-import cloudpickle,gymnasium as gym,numpy as np,torch
+from uuid import uuid4
+import gymnasium as gym,numpy as np,torch
 from stable_baselines3 import PPO
 from experiments.league_adaptive.runtime import ROOT,load_actor,setup,spaces,write
 
 
-def inference_support(out):
-    import importlib.metadata,platform
-    (out/'inference.py').write_text('''"""Load standalone SB3 inference; this does not certify course Arena compatibility."""
-from pathlib import Path
-from stable_baselines3 import PPO
+def register_model_source(path, name=None):
+    """Register packaged model.py before PPO.load, as the course loader does."""
+    import importlib.util
+    import sys
+    from uuid import uuid4
 
-def load_model(device='cpu'):
-    model=PPO.load(Path(__file__).resolve().parent/'policy.zip',device=device)
+    name = name or f'sf2_custom_model_{uuid4().hex}'
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(path)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    try:
+        spec.loader.exec_module(module)
+    except BaseException:
+        sys.modules.pop(name, None)
+        raise
+    return module
+
+
+def package_model_source(path, source):
+    # Course imports model.py under its own module name. An export-specific
+    # alias links pickled class references back to that exact module.
+    module_name=f'sf2_packaged_model_{uuid4().hex}'
+    path.write_text(source+f'\nfrom sys import modules as _modules\n'
+                    f'_modules[{module_name!r}] = _modules[__name__]\n', encoding='utf-8')
+    return register_model_source(path, module_name)
+
+
+def load_packaged_policy(directory, device='cpu'):
+    from pathlib import Path
+    from stable_baselines3 import PPO
+
+    directory=Path(directory)
+    module=register_model_source(directory/'model.py')
+    model=PPO.load(directory/'policy.zip', device=device)
+    for cls in (model.policy_class, model.policy_kwargs.get('features_extractor_class')):
+        if cls is not None and not cls.__module__.startswith('stable_baselines3.'):
+            if getattr(module, cls.__name__, None) is not cls:
+                raise RuntimeError(f'policy.zip did not resolve {cls.__name__} from model.py')
     model.policy.set_training_mode(False)
     return model
-''')
+
+
+def inference_support(out):
+    import importlib.metadata,platform
+    helpers=inspect.getsource(register_model_source)+'\n\n'+inspect.getsource(load_packaged_policy)
+    (out/'inference.py').write_text(helpers+'''
+
+def load_model(device='cpu'):
+    from pathlib import Path
+    return load_packaged_policy(Path(__file__).resolve().parent, device)
+''', encoding='utf-8')
     versions={name:importlib.metadata.version(name) for name in ('stable-baselines3','torch','numpy','gymnasium','cloudpickle')}
     write(out/'runtime_versions.json',dict(python=platform.python_version(),packages=versions,
         observation='image uint8[4,84,96], position float32[6], self-first and divided by 1024',
         action='deterministic discrete input-template index; see policy_definition.json',
+        custom_classes='Loaded by reference from model.py; keep it with policy.zip.',
         scope='Versions used for local CPU reload. The emulator and game setup are separate from policy inference.'))
+    return helpers
 
 
 def inspect_course_contract(definition,out,notebook):
@@ -131,9 +176,10 @@ def verify_instance_isolation(out):
 import copy,json,sys
 from pathlib import Path
 import numpy as np,torch
-from stable_baselines3 import PPO
 torch.set_num_threads(1)
-p=Path(sys.argv[1]);actors=[PPO.load(p/'policy.zip',device='cpu') for _ in range(3)]
+from runpy import run_path
+p=Path(sys.argv[1]);load_model=run_path(str(p/'inference.py'))['load_model']
+actors=[load_model() for _ in range(3)]
 for actor in actors:actor.policy.set_training_mode(False);actor.policy.reset_inference_state()
 assert len({next(a.policy.parameters()).data_ptr() for a in actors})==3
 def same(a,b):
@@ -159,7 +205,7 @@ result=dict(independent_agents=2,separate_control=1,continuous_decisions=i+1,
 (p/'instance_isolation.json').write_text(json.dumps(result,indent=2)+'\\n')
 print('INDEPENDENT_INSTANCES_MATCHED',result['continuous_decisions'])
 '''
-    subprocess.run([sys.executable,'-I','-s','-c',child,str(out)],cwd=tempfile.gettempdir(),check=True)
+    subprocess.run([sys.executable,'-I','-B','-c',child,str(out)],cwd=out,check=True)
     return json.loads((Path(out)/'instance_isolation.json').read_text())
 
 
@@ -332,12 +378,12 @@ def main():
     out.mkdir(parents=True)
     if conversion:write(out/'catalog_conversion.json',dict(source_agent=a.agent,**conversion))
     if a.course_notebook:inspect_course_contract(d,out,ROOT/a.course_notebook)
-    inference_support(out);source=option_planner_source(d) if d['kind']=='counterfactual_option_planner' else counterq_source(d) if d['kind'] in ('context_double_dqn','sequence_double_q','sequence_ppo') else recurrent_direct_source(d) if d['kind']=='recurrent_direct_ppo' else memory_source(d) if d['kind']=='memory_ppo' else mixture_source(d) if d['kind']=='neural_mixture' else source_for(d);(out/'student_model.py').write_text(source)
+    loader_source=inference_support(out)
+    source=option_planner_source(d) if d['kind']=='counterfactual_option_planner' else counterq_source(d) if d['kind'] in ('context_double_dqn','sequence_double_q','sequence_ppo') else recurrent_direct_source(d) if d['kind']=='recurrent_direct_ppo' else memory_source(d) if d['kind']=='memory_ppo' else mixture_source(d) if d['kind']=='neural_mixture' else source_for(d)
+    module=package_model_source(out/'model.py', source)
     (out/'student_actions.py').write_text('CUSTOM_ACTIONS = '+repr(d['actions'][15:])+'\n')
     (out/'student_observation.py').write_text(d['observation_source'])
     write(out/'policy_definition.json',d)
-    module=types.ModuleType('counter_ryu_portable_model');module.__file__=str(out/'student_model.py')
-    sys.modules[module.__name__]=module;exec(compile(source,module.__file__,'exec'),module.__dict__)
     class SpaceOnly(gym.Env):
         observation_space=spaces(d);action_space=gym.spaces.Discrete(len(d['actions']))
         def reset(self,*,seed=None,options=None):raise RuntimeError('Serialization only')
@@ -346,9 +392,7 @@ def main():
     model=PPO(cls,SpaceOnly(),policy_kwargs=kwargs,device='cpu',n_steps=512,batch_size=512,
         gamma=1.,gae_lambda=.95,n_epochs=4,learning_rate=1e-4,clip_range=.1,ent_coef=.005,target_kl=.03)
     model.policy.load_state_dict(actor.policy.state_dict(),strict=True)
-    cloudpickle.register_pickle_by_value(module)
-    try:model.save(str(out/'policy.zip'))
-    finally:cloudpickle.unregister_pickle_by_value(module)
+    model.save(str(out/'policy.zip'))
     with np.load(ROOT/'models/counter_ryu_final/reload_inputs.npz',allow_pickle=False) as data:
         ids=np.linspace(0,len(data['image'])-1,80,dtype=int)
         observations={k:data[k][ids].copy() for k in ('image','position')}
@@ -356,11 +400,13 @@ def main():
     if recurrent:
         with np.load(ROOT/'assets/validation/sequence_inputs.npz',allow_pickle=False) as sequence:
             np.savez_compressed(out/'reload_sequence_inputs.npz',image=sequence['image'][:96],position=sequence['position'][:96])
-    child='''import sys,numpy as np,torch
-from stable_baselines3 import PPO
+    child=loader_source+'''
+import sys,numpy as np,torch
 from pathlib import Path
 torch.set_num_threads(1)
-p=Path(sys.argv[1]);m=PPO.load(p/'policy.zip',device='cpu');m.policy.set_training_mode(False)
+p=Path(sys.argv[1]);m=load_packaged_policy(p)
+if any(name=='experiments' or name.startswith('experiments.') for name in sys.modules):
+ raise RuntimeError('Cold reload imported the research repository')
 sequence_q=sys.argv[2]=='sequence_double_q'
 with np.load(p/'reload_inputs.npz',allow_pickle=False) as data:o={k:data[k].copy() for k in ('image','position')}
 with torch.inference_mode():action=m.predict(o,deterministic=True)[0]
@@ -382,7 +428,7 @@ if (p/'reload_sequence_inputs.npz').exists():
  np.savez_compressed(p/'reload_sequence_predictions.npz',action=actions,probability=probabilities,value=values,q=q_vectors)
 print('Standalone SB3 reload completed in an isolated interpreter.')
 '''
-    subprocess.run([sys.executable,'-I','-s','-c',child,str(out),d['kind']],cwd=tempfile.gettempdir(),check=True)
+    subprocess.run([sys.executable,'-I','-B','-c',child,str(out),d['kind']],cwd=out,check=True)
     source_actions=actor.predict(observations,True)[0]
     with torch.no_grad():
         if recurrent:
@@ -415,7 +461,8 @@ print('Standalone SB3 reload completed in an isolated interpreter.')
     write(out/'reload_result.json',dict(source_agent=str(Path(a.agent).resolve()),observations=80,
         greedy_actions_equal=actions_equal,max_action_probability_error=probability_error,max_value_error=value_error,
         max_q_error=q_error,
-        recurrent_sequence=sequence_result,
+        recurrent_sequence=sequence_result,custom_classes_from_model_source=True,
+        action_temperature=getattr(actor.policy,'action_temperature',None),
         score_semantics='For sequence Double Q: softmax(Q/.2) is a cloning-link identity score, not the acting distribution; deterministic deployment uses Q argmax.' if d['kind']=='sequence_double_q' else 'Policy distribution and value identity checks.',
         scope='Learned inference weights reload in a separate isolated interpreter with no project modules. Q policies use SB3 only as a serialization container. This is not an official Arena submission package or an Arena acceptance test.'))
     if a.course_notebook and recurrent:verify_instance_isolation(out)

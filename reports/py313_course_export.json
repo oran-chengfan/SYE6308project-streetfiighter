@@ -1,0 +1,210 @@
+{
+  "date": "2026-11-25",
+  "frozen_packages": {
+    "existing_mac_r2": {
+      "outer_zip": "models/championship_1243/Group_10.zip",
+      "paired_receipt": "reports/championship_1243/receipt.json",
+      "paired_action_comparison": "reports/championship_1243/action_replay.json",
+      "version": "Mac Public Practice Arena R2",
+      "preserved_unchanged": true
+    },
+    "ta_kaggle": {
+      "evidence_status": "User reports an earlier TA validation. A fresh fetch found no matching original artifacts in the remote branches. The original bundle was unavailable for local cold startup during this task.",
+      "handoff_source_directory": "artifacts/arena_1243_cross_python_20261123/kaggle",
+      "required_original_files": [
+        "Group_10.zip",
+        "ta_arena_receipt.json",
+        "ta_notebook_verification.json"
+      ],
+      "reported_swapped_games": 4,
+      "reported_actions_combined": 3696,
+      "reported_dependencies": {
+        "python": "3.13.15",
+        "torch": "2.11.0+cpu",
+        "numpy": "2.1.3",
+        "gymnasium": "1.2.0",
+        "stable-baselines3": "2.7.0",
+        "stable-retro": "1.0.1",
+        "gym": "0.26.2"
+      }
+    }
+  },
+  "repair": [
+    "Save the custom policy and feature extractor by name. model.py registers an export-specific alias when loaded under the course loader's own module name.",
+    "SequencePPOPolicy accepts and saves action_temperature as a constructor parameter.",
+    "Convert the Gymnasium discrete action count to a Python int before building the Torch 2.11 GRU.",
+    "Run cold PPO.load only after model.py registration; compare both the actual classes and the policy's continuous inputs."
+  ],
+  "windows_native": {
+    "python": "3.12.14",
+    "dependencies": {
+      "torch": "2.5.1+cpu",
+      "numpy": "1.26.4",
+      "gymnasium": "1.2.3",
+      "stable-baselines3": "2.7.0",
+      "stable-retro": "1.0.1",
+      "cloudpickle": "3.1.2"
+    },
+    "procedure": "1117 Notebook sections 1–5 with FIRST_MODEL_SMOKE=True and action_temperature=0.73 in section 3.4, through prepare_student, check_environment, train_ppo and export_model.",
+    "rollout": {
+      "decision_steps": 32,
+      "native_frames": 192,
+      "optimizer_updates": 2,
+      "updated_state_tensors": 41,
+      "updated_gru_tensors": 4,
+      "curriculum": "Ryu 2-star CPU, one environment; n_steps=16, sequence length 8, batch size 16, one epoch"
+    },
+    "export": {
+      "observations": 80,
+      "greedy_actions_equal": true,
+      "max_action_probability_error": 0,
+      "max_value_error": 0,
+      "recurrent_sequence": {
+        "decisions": 96,
+        "actions_equal": true,
+        "max_probability_error": 0,
+        "max_value_error": 0
+      },
+      "action_temperature": 0.73,
+      "custom_classes_from_model_source": true
+    },
+    "instance_isolation": {
+      "independent_agents": 2,
+      "continuous_decisions": 96,
+      "history_pollution": 0
+    },
+    "native_pvp_swap": {
+      "offsets": [
+        0
+      ],
+      "cases": [
+        {
+          "opponent": "heldout_fireball_timing",
+          "player": 1,
+          "offset": 0,
+          "result": "loss",
+          "end_reason": "signed_hp_ko",
+          "self_hp": -1,
+          "opponent_hp": 127,
+          "native_frames": 1449
+        },
+        {
+          "opponent": "heldout_fireball_timing",
+          "player": 2,
+          "offset": 0,
+          "result": "loss",
+          "end_reason": "signed_hp_ko",
+          "self_hp": -1,
+          "opponent_hp": 156,
+          "native_frames": 1340
+        }
+      ],
+      "deployed_inference": [
+        {
+          "condition": [
+            "heldout_fireball_timing",
+            "rule",
+            1,
+            0
+          ],
+          "decisions": 242,
+          "action_differences": 0,
+          "max_q_error": 0,
+          "memory_state_differences": 0,
+          "max_probability_error": 0,
+          "max_critic_error": 0
+        },
+        {
+          "condition": [
+            "heldout_fireball_timing",
+            "rule",
+            2,
+            0
+          ],
+          "decisions": 224,
+          "action_differences": 0,
+          "max_q_error": 0,
+          "memory_state_differences": 0,
+          "max_probability_error": 0,
+          "max_critic_error": 0
+        }
+      ],
+      "total_actions_compared": 466,
+      "all_passed": true
+    },
+    "f_checkpoint_as_notebook_start": {
+      "source": "models/ryu_targeted_delivery/feedback_candidate.pt",
+      "comparison": "models/competition_delivery/group10_Ryu.zip",
+      "projection": "configs/ryu_targeted_delivery.json course_delivery.action_indices",
+      "tested_inputs": 96,
+      "action_differences": 0,
+      "action_catalog_identical": true,
+      "max_probability_error": 0
+    }
+  },
+  "windows_python313": {
+    "dependencies": {
+      "python": "3.13.15",
+      "torch": "2.11.0+cpu",
+      "numpy": "2.1.3",
+      "gymnasium": "1.2.0",
+      "stable_baselines3": "2.7.0",
+      "cloudpickle": "3.1.2",
+      "platform": "Windows"
+    },
+    "default_ppo": {
+      "scope": "stock course ImagePositionExtractor + SB3 PPO; legal-shaped training fixture, no emulator",
+      "actual_steps": 32,
+      "optimizer_updates": 2,
+      "changed_tensors": 34,
+      "actions_equal": 96,
+      "method": "Execute only the default ImagePositionExtractor/build_model source from classroom cell 14. package_model_source; model.learn(total_timesteps=32); PPO.save; load_packaged_policy in a new isolated Python process."
+    },
+    "recurrent": {
+      "scope": "full recurrent policy; one auxiliary update on archived successful native trajectories",
+      "changed_tensors": 41,
+      "changed_recurrent_tensors": 4,
+      "supervised_transitions": 32,
+      "source_games": 3,
+      "optimizer_updates": 1,
+      "temperature_restored": 0.73,
+      "cold_reload": {
+        "decisions": 96,
+        "actions_equal": true,
+        "max_probability_error": 0,
+        "max_value_error": 0
+      },
+      "verified_custom_sources": true,
+      "method": "Weight initialization with the 64-action sequence PPO definition. Use recurrent_success_loss with two 16-transition sequences from three existing native KO trajectories in the Windows archive checks.pt; one optimizer step; export_model through portable_export; isolated PPO.load.",
+      "ppo_updates": 0,
+      "emulator_interactions_in_this_test": 0,
+      "isolated_instances": {
+        "independent_agents": 2,
+        "continuous_decisions": 96,
+        "history_pollution": 0
+      }
+    },
+    "cross_minor_reload": {
+      "continuous": 96,
+      "action_differences": 0,
+      "max_probability_error": 0,
+      "temperature": 0.73,
+      "serialized_custom_classes": "references",
+      "python": "3.13.15",
+      "exported_on": "Windows 3.12.14 / torch 2.5.1+cpu / NumPy 1.26.4",
+      "loaded_on": "Windows 3.13.15 / torch 2.11.0+cpu / NumPy 2.1.3"
+    },
+    "classroom_unit_tests": {
+      "command": "python -B -m unittest discover -s tests -p test_classroom.py",
+      "passed": 4
+    },
+    "scope": "This Windows 3.13 environment exercised learner updates and portable inference without Stable-Retro. The new native training and complete swap cases above were run on Windows 3.12. The new clean-checkout game-training path has not yet been executed in the TA Kaggle environment."
+  },
+  "reproduce": {
+    "notebook": "notebooks/working/sye6308_group10_1117.ipynb",
+    "first_model": "Turn on FIRST_MODEL_SMOKE in section 1, then run the 1117 Notebook in the TA course environment.",
+    "export_command": "python -B -m experiments.ryu_direct_league.portable_export --agent artifacts/your_training/learner/checkpoint_32.pt --out artifacts/first_course_export --course-notebook notebooks/upstream/sye6308-sf2-classroom-2026.ipynb",
+    "cold_entry": "Run inference.py's load_model() with its policy.zip and model.py in the same export directory.",
+    "course_scope": "Cold loader registers model.py using importlib before PPO.load, the relevant loading order in the course code. No course Arena acceptance has been asserted for newly trained models."
+  }
+}

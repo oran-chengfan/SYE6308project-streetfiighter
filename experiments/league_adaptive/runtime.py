@@ -186,6 +186,9 @@ def load_actor(path):
         if definition is None:definition=json.loads(definition_path.read_text())
         elif definition_path.exists() and definition!=json.loads(definition_path.read_text()):
             raise ValueError('Embedded and companion policy definitions disagree')
+        model_source=path.parent/'model.py'
+        if model_source.is_file():
+            source_module(model_source.read_text(encoding='utf-8'))
         model=PPO.load(path,device='cpu')
         if model.action_space.n!=len(definition['actions']) or model.observation_space!=spaces(definition):
             raise ValueError('Portable policy and local observation/action definition disagree')

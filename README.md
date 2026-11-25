@@ -1,5 +1,25 @@
 # Counter-Ryu · SYE6308
 
+## 下一届从这里开始
+
+首选 **TA 提供的 Kaggle 课程环境**。本届验收使用 Python **3.13.15**、PyTorch **2.11.0+cpu**、NumPy **2.1.3**、Gymnasium **1.2.0**、SB3 **2.7.0**、Stable-Retro **1.0.1**，环境另有 Gym **0.26.2**。Windows 原生开发继续使用本仓库的 3.12 环境。 [两端实测记录](reports/py313_course_export.json)
+
+### 运行已验收的 1243 分模型
+
+在 TA 指定的 Kaggle Arena notebook 中，将参赛包输入指向**同一版已验收的外层 `Group_10.zip`**，使用 TA 的换边设置运行。此前 Kaggle TA 验收记录覆盖四局、双方共 3,696 次动作。该版外层原件及配套的 `ta_arena_receipt.json`、`ta_notebook_verification.json` 待 Mac 同步。当前 GitHub 可下载的 **Mac R2 版**仍有自己的回执。 [历史 R2 版与回执](#比赛交付与复跑)
+
+### 训练并导出自己的第一个模型
+
+1. 将本仓库检出到 Kaggle 的可写目录（例如 `/kaggle/working/github_sync`），打开 1117 Notebook。使用 TA 的依赖版本和课程授权的 ROM。若已安装的 Stable-Retro 缺少本地 ROM，可用仓库的直接复制入口。 [1117 Notebook](notebooks/working/sye6308_group10_1117.ipynb) · [本地 ROM 复制入口](scripts/install_local_rom.py)
+2. 在第 1 节把 `FIRST_MODEL_SMOKE = True`，从头运行。它随机初始化 Ryu 循环 PPO，在 Ryu 二星做 32 次决策和两次优化更新，随后自动执行第 7 节导出和第 7.2 节冷加载检查。默认开关仍关闭。
+3. 看到 `PVE_TRAINING_COMPLETE` 和 `PORTABLE_POLICY_RELOAD_MATCHED` 后，查看 `reload_result.json`。期望 80 个固定输入和 96 次连续动作一致。保留整个导出目录，尤其是本次生成的 **`policy.zip` 与 `model.py`**。课程加载器先注册包中的 `model.py`，再调用 `PPO.load()`。观察处理、动作表及模型配置也在导出目录。
+
+Windows 原生 3.12 已实测短训、导出和换边对局。Windows 3.13 已实测默认 PPO 小任务和循环策略的轨迹监督更新，两者均通过冷加载。新模型的 Kaggle 完整原生短训和课程外层验收待复验。 [Windows 与 Kaggle 的验证范围](reports/py313_course_export.json)
+
+沿用课程默认 PPO 的同学，可在构造模型之前调用同一导出模块的 `package_model_source(out / 'model.py', source)`。其中 `source` 为自己的 `student_model.py` 文本。用返回模块的 `build_model` 构造并训练，再保存 `policy.zip`。在新进程调用 `load_packaged_policy(out)` 可核对加载和类来源。 [共享导出入口](experiments/ryu_direct_league/portable_export.py)
+
+若 `PPO.load()` 在第一次出招前以 **-11** 退出，先检查自定义策略类和提取器是否以引用方式序列化，并核对包内 `model.py` 是否与训练时的构造参数匹配，尤其是 `action_temperature`。Gym 的维护提示本身无法定位这个错误。 [共享导出入口](experiments/ryu_direct_league/portable_export.py)
+
 ## 比赛交付与复跑
 
 | 版本 | 归档用途 | 入口 |
