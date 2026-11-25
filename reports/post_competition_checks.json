@@ -1,0 +1,508 @@
+{
+  "date": "2026-11-25",
+  "scope": "Windows 全实验工作树。临时输出清理后，归档 worktree 未计入目录测量。",
+  "reclaimed": {
+    "bytes": 2263655344,
+    "original_files_removed": 9,
+    "optimizer_states_retired": 10,
+    "original_legacy_reduction_bytes": 54195616,
+    "readable_workspace_bytes": 36591061101,
+    "legacy_itemized_receipt": "artifacts/post_competition_legacy_cleanup_20261125.json"
+  },
+  "preserved": {
+    "models": [
+      "models/competition_delivery/group10_Ryu.zip",
+      "models/ryu_targeted_delivery/feedback_candidate.pt",
+      "models/counter_ryu_final/agent.pt",
+      "models/ryu_competition_final/agent.pt",
+      "models/retained_to_f/research.pt",
+      "models/ryu_p1_pressure/agent.pt",
+      "models/ryu_p1_pressure/policy.zip"
+    ],
+    "full_training_files": 10,
+    "full_training_bytes": 135494412,
+    "retained_evidence_bytes": 252719201,
+    "historical_legacy_anchors": 474,
+    "curated_experience": 402
+  },
+  "resumed_after_cleanup": {
+    "from": 32,
+    "to": 33,
+    "update": 33,
+    "windows": [
+      [4, 134, 198, 64, 64],
+      [0, 32, 96, 64, 64],
+      [6, 29, 93, 64, 64],
+      [36, 264, 328, 64, 64],
+      [2, 119, 183, 64, 64],
+      [32, 319, 383, 64, 64],
+      [16, 159, 223, 64, 64],
+      [3, 151, 215, 64, 64],
+      [25, 73, 137, 64, 64],
+      [46, 215, 279, 64, 64],
+      [1, 79, 110, 31, 31],
+      [26, 123, 124, 1, 1]
+    ],
+    "CE": 0.0018511753296479583,
+    "weighted_KL": 0,
+    "unweighted_KL": 0.00005366728785666589
+  },
+  "derived_banks": [
+    {
+      "path": "artifacts/ryu_p1_pressure/p1_rehearsal_coverage.pt",
+      "bytes": 715542104,
+      "reconstructed_episodes": 328,
+      "original_bank_values_and_order_equal": true,
+      "rebuild_test_after_removal": true,
+      "inputs": [
+        "configs/ryu_p1_pressure.json",
+        "artifacts/ryu_p1_pressure/runs/201137/retained/p1_transition_rehearsal/dev_64/summary.json",
+        "artifacts/ryu_p1_pressure/p1_transition_rehearsal.pt",
+        "artifacts/ryu_p1_pressure/p1_continuation/transition_plan.json",
+        "artifacts/ryu_p1_pressure/p1_continuation/transition_selection.json",
+        "artifacts/ryu_p1_pressure/decision_margin/audit.json",
+        "artifacts/ryu_p1_pressure/decision_margin/matched_complete_followups.json",
+        "artifacts/ryu_p1_pressure/p1_continuation/coverage_plan.json"
+      ],
+      "fixed_batch": {
+        "plan_equal": true,
+        "update": 1,
+        "windows": [
+          [191, 67, 131, 64, 64],
+          [300, 8, 20, 12, 0],
+          [327, 0, 64, 64, 64],
+          [221, 16, 28, 12, 0],
+          [320, 0, 64, 63, 63],
+          [257, 50, 110, 60, 60],
+          [281, 138, 202, 64, 64],
+          [201, 19, 43, 24, 0],
+          [256, 82, 146, 64, 64],
+          [307, 384, 448, 64, 64],
+          [297, 73, 85, 12, 0],
+          [91, 302, 366, 64, 64]
+        ],
+        "CE": 0.2572738230228424,
+        "weighted_KL": 0,
+        "unweighted_KL": 0.007510826003883864
+      }
+    },
+    {
+      "path": "artifacts/ryu_p1_pressure/closing_pressure_accumulation.pt",
+      "bytes": 590055224,
+      "reconstructed_episodes": 256,
+      "original_bank_values_and_order_equal": true,
+      "inputs": [
+        "configs/ryu_p1_pressure.json",
+        "artifacts/ryu_p1_pressure/closing_pressure_context.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/balance_context_selection.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/parent_followup/diagnosis.json",
+        "artifacts/ryu_p1_pressure/runs/201137/retained/closing_pressure_context/dev_64/summary.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/balance_context_plan.json",
+        "artifacts/ryu_p1_pressure/neural_practice/training_plan.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/accumulation_development/baselines.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/accumulation_autonomous/histories.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/parent_followup/practice_neural_201601_P1_18/prefix_12/conditional_demonstrations.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/parent_followup/practice_neural_201601_P2_18/prefix_12/conditional_demonstrations.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/parent_followup/closing_practice_201917_P2_12/prefix_12/conditional_demonstrations.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/accumulation_shared_opening/diagnosis.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/accumulation_shared_opening/other/conditional_demonstrations.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/accumulation_plan.json"
+      ],
+      "retained_input_aliases": {},
+      "fixed_batch": {
+        "plan_equal": true,
+        "update": 1,
+        "windows": [
+          [191, 67, 131, 64, 64],
+          [205, 0, 13, 13, 0],
+          [190, 0, 64, 64, 64],
+          [221, 16, 28, 12, 0],
+          [204, 0, 13, 13, 0],
+          [242, 139, 203, 64, 64],
+          [245, 68, 132, 64, 64],
+          [201, 19, 43, 24, 0],
+          [243, 151, 215, 64, 64],
+          [250, 71, 135, 64, 64],
+          [252, 7, 19, 12, 0],
+          [91, 302, 366, 64, 64]
+        ],
+        "CE": 0.01844196580350399,
+        "weighted_KL": 0,
+        "unweighted_KL": 0.009218955001921247
+      }
+    },
+    {
+      "path": "artifacts/ryu_p1_pressure/closing_pressure_timing.pt",
+      "bytes": 477010016,
+      "reconstructed_episodes": 217,
+      "original_bank_values_and_order_equal": true,
+      "inputs": [
+        "configs/ryu_p1_pressure.json",
+        "artifacts/ryu_p1_pressure/closing_pressure_replay.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/replay_selection.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/replay_plan.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/timing_support/registration.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/timing_support/diagnosis.json",
+        "artifacts/ryu_p1_pressure/closing_pressure/timing_support/parent/histories.pt",
+        "artifacts/ryu_p1_pressure/closing_pressure/timing_plan.json"
+      ],
+      "retained_input_aliases": {
+        "artifacts/ryu_p1_pressure/neural_pressure/frozen.pt": "artifacts/ryu_p1_pressure/neural_pressure/published/agent.pt"
+      },
+      "fixed_batch": {
+        "plan_equal": true,
+        "update": 1,
+        "windows": [
+          [191, 144, 208, 64, 64],
+          [205, 0, 13, 13, 0],
+          [190, 0, 64, 64, 64],
+          [193, 46, 110, 64, 64],
+          [204, 0, 13, 13, 0],
+          [92, 122, 186, 64, 64],
+          [33, 130, 140, 10, 10],
+          [201, 19, 43, 24, 0],
+          [142, 44, 108, 64, 64],
+          [187, 151, 215, 64, 64],
+          [207, 58, 70, 12, 0],
+          [182, 15, 27, 12, 0]
+        ],
+        "CE": 0.07975639402866364,
+        "weighted_KL": 0,
+        "unweighted_KL": 0.0037338252401338252
+      }
+    },
+    {
+      "path": "artifacts/ryu_p1_pressure/neural_pressure_opening.pt",
+      "bytes": 426852384,
+      "reconstructed_episodes": 199,
+      "original_bank_values_and_order_equal": true,
+      "inputs": [
+        "configs/ryu_p1_pressure.json",
+        "artifacts/ryu_p1_pressure/neural_pressure_retention.pt",
+        "artifacts/ryu_p1_pressure/neural_practice/readout_selection.json",
+        "artifacts/ryu_p1_pressure/neural_practice/training_plan.json",
+        "artifacts/ryu_p1_pressure/neural_practice/mixed_plan.json",
+        "artifacts/ryu_p1_pressure/neural_practice/opening_plan.json"
+      ],
+      "retained_input_aliases": {
+        "artifacts/ryu_p1_pressure/continuation_handoff/frozen.pt": "artifacts/ryu_p1_pressure/continuation_handoff/published/agent.pt"
+      },
+      "fixed_batch": {
+        "plan_equal": true,
+        "update": 1,
+        "windows": [
+          [191, 430, 463, 33, 33],
+          [197, 0, 13, 12, 0],
+          [190, 0, 64, 64, 64],
+          [193, 124, 188, 64, 64],
+          [198, 0, 13, 13, 0],
+          [92, 131, 195, 64, 64],
+          [33, 26, 90, 64, 64],
+          [185, 208, 272, 64, 64],
+          [90, 34, 98, 64, 64],
+          [192, 235, 299, 64, 64],
+          [186, 41, 105, 64, 64],
+          [94, 3, 67, 64, 64]
+        ],
+        "CE": 1.6789655685424805,
+        "weighted_KL": 0,
+        "unweighted_KL": 0.002733647001806734
+      }
+    }
+  ],
+  "legacy": {
+    "optimizer_only_removal": [
+      "artifacts/closed_loop_tactics/matched/seed75131/coherent/A/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75131/coherent/B/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75131/coherent/mixed/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75131/student/mixed/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75131/teacher/mixed/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75137/coherent/A/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75137/coherent/B/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75137/coherent/mixed/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75137/student/mixed/PPO/checkpoint_8192.pt",
+      "artifacts/closed_loop_tactics/matched/seed75137/teacher/mixed/PPO/checkpoint_8192.pt"
+    ],
+    "equal_copies": [
+      {
+        "path": "artifacts/closed_loop_tactics/candidate_behavior/control_neural_P1/decisions.json",
+        "kept": "reports/closed_loop_tactics/videos/PvP_response_P1/decisions.json",
+        "bytes": 366141
+      },
+      {
+        "path": "artifacts/closed_loop_tactics/candidate_behavior/control_reactive_P2/decisions.json",
+        "kept": "reports/closed_loop_tactics/videos/PvP_spacing_P2/decisions.json",
+        "bytes": 208396
+      },
+      {
+        "path": "artifacts/footwork_retention/seed76137/control/aggregate_1/diagnosis/traces.json",
+        "kept": "artifacts/footwork_retention/seed76131/control/aggregate_1/diagnosis/traces.json",
+        "bytes": 1034702
+      },
+      {
+        "path": "artifacts/continual_improvement/after_A_diagnosis/F_mastery12.json",
+        "kept": "artifacts/continual_improvement/after_A_diagnosis/F_mastery12/summary.json",
+        "bytes": 67345
+      },
+      {
+        "path": "artifacts/continual_improvement/after_A_diagnosis/tactical_remaining_families.json",
+        "kept": "artifacts/continual_improvement/after_A_diagnosis/tactical_remaining_families/summary.json",
+        "bytes": 84650
+      }
+    ]
+  },
+  "recovery": {
+    "existing_mapping_files": [
+      "artifacts/ryu_p1_pressure/native_trace_cleanup_20261122.csv",
+      "artifacts/post_competition_deletion_candidates_20261124.csv",
+      "artifacts/post_competition_replay_removals_20261125.csv"
+    ],
+    "mapped_destinations_checked": 2757,
+    "historical_aliases": 8,
+    "cases_with_historical_aliases": 114,
+    "compared_bouts": [
+      {
+        "condition": [
+          "final_contact_Ken69",
+          1,
+          0
+        ],
+        "model": "artifacts/ryu_p1_pressure/runs/201131/plain/p1_rehearsal_coverage/fit/checkpoint_64.pt",
+        "trace": "artifacts/ryu_p1_pressure/runs/201131/plain/p1_rehearsal_coverage/dev_64/native/case_006/native_behavior.json",
+        "action_frames": 1369,
+        "both_actions_equal": true,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 55,
+          "opponent_hp": -1,
+          "native_frames": 1369
+        }
+      },
+      {
+        "condition": [
+          "final_contact_Ken69",
+          2,
+          0
+        ],
+        "model": "artifacts/ryu_p1_pressure/runs/201131/plain/p1_rehearsal_coverage/fit/checkpoint_64.pt",
+        "trace": "artifacts/ryu_p1_pressure/runs/201131/plain/p1_rehearsal_coverage/dev_64/native/case_007/native_behavior.json",
+        "action_frames": 889,
+        "both_actions_equal": true,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 147,
+          "opponent_hp": -1,
+          "native_frames": 889
+        }
+      },
+      {
+        "condition": [
+          "final_reactive_Ryu_31_4",
+          2,
+          0
+        ],
+        "model": "models/closed_loop_tactics/runtime/policy.zip",
+        "trace": "reports/closed_loop_tactics/videos/PvP_spacing_P2/native_behavior.json",
+        "action_frames": 1557,
+        "both_actions_equal": true,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 99,
+          "opponent_hp": -1,
+          "native_frames": 1557
+        }
+      },
+      {
+        "condition": [
+          "retention_train_27_5_72",
+          1,
+          0
+        ],
+        "model": "models/footwork_retention/runtime/policy.zip",
+        "trace": "artifacts/footwork_retention/final_videos/01_training/native_behavior.json",
+        "action_frames": 1242,
+        "both_actions_equal": false,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 30,
+          "opponent_hp": -1,
+          "native_frames": 1242
+        },
+        "old_length": 1242,
+        "new_length": 1242,
+        "first_differing_inputs": [
+          [
+            109,
+            [
+              "RIGHT"
+            ],
+            [
+              "LEFT"
+            ]
+          ],
+          [
+            109,
+            [],
+            [
+              "LEFT"
+            ]
+          ]
+        ]
+      },
+      {
+        "condition": [
+          "final_reactive_Ryu_31_4",
+          2,
+          0
+        ],
+        "model": "models/continual_improvement/runtime/policy.zip",
+        "trace": "artifacts/continual_improvement/showcase/pvp_p2/native_behavior.json",
+        "action_frames": 2226,
+        "both_actions_equal": false,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 101,
+          "opponent_hp": -1,
+          "native_frames": 2226
+        },
+        "old_length": 2226,
+        "new_length": 2226,
+        "first_differing_inputs": [
+          [
+            654,
+            [
+              "RIGHT",
+              "Y"
+            ],
+            [
+              "LEFT",
+              "Y"
+            ]
+          ],
+          [
+            654,
+            [
+              "RIGHT",
+              "Y"
+            ],
+            []
+          ]
+        ]
+      },
+      {
+        "condition": [
+          "zoning_Guile27",
+          2,
+          0
+        ],
+        "model": "artifacts/ryu_p1_pressure/neural_pressure/published/agent.pt",
+        "trace": "artifacts/ryu_p1_pressure/runs/201131/plain/closing_pressure_hidden/dev_64/native/case_004/native_behavior.json",
+        "action_frames": 2230,
+        "both_actions_equal": true,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 39,
+          "opponent_hp": -1,
+          "native_frames": 2230
+        },
+        "alias": {
+          "type": "checkpoint",
+          "original": "artifacts/ryu_p1_pressure/runs/201131/plain/neural_pressure_shared_opening/fit/checkpoint_64.pt",
+          "kept": "artifacts/ryu_p1_pressure/neural_pressure/published/agent.pt"
+        }
+      },
+      {
+        "condition": [
+          "closing_practice_201917",
+          1,
+          0
+        ],
+        "model": "artifacts/ryu_p1_pressure/runs/201131/plain/closing_pressure_accumulation/fit/checkpoint_64.pt",
+        "trace": "artifacts/ryu_p1_pressure/runs/201131/retained/closing_pressure_context/dev_64/native/case_090/native_behavior.json",
+        "action_frames": 2352,
+        "both_actions_equal": true,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 73,
+          "opponent_hp": -1,
+          "native_frames": 2352
+        },
+        "alias": {
+          "type": "opponent_weight",
+          "original": "artifacts/ryu_p1_pressure/closing_pressure/practice_opponents/closing_practice_201917/agent.pt",
+          "kept": "models/ryu_p1_pressure/opponents/closing_practice_201917.pt"
+        }
+      },
+      {
+        "condition": [
+          "closing_practice_201901",
+          1,
+          0
+        ],
+        "model": "artifacts/ryu_p1_pressure/runs/201131/plain/closing_pressure_balance/fit/checkpoint_64.pt",
+        "trace": "artifacts/ryu_p1_pressure/runs/201131/plain/closing_pressure_balance/dev_64/native/case_082/native_behavior.json",
+        "action_frames": 2430,
+        "both_actions_equal": true,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 1,
+          "opponent_hp": -1,
+          "native_frames": 2430
+        },
+        "alias": {
+          "type": "opponent_weight",
+          "original": "artifacts/ryu_p1_pressure/closing_pressure/practice_opponents/closing_practice_201901/agent.pt",
+          "kept": "models/ryu_p1_pressure/opponents/closing_practice_201901.pt"
+        }
+      },
+      {
+        "condition": [
+          "qualification_Ryu_8",
+          1,
+          0
+        ],
+        "model": "models/ryu_p1_pressure/policy.zip",
+        "trace": "artifacts/ryu_p1_pressure/p1_coverage_repair/video/Ryu8/native_behavior.json",
+        "action_frames": 1659,
+        "both_actions_equal": true,
+        "terminal_equal": true,
+        "terminal": {
+          "result": "win",
+          "end_reason": "signed_hp_ko",
+          "self_hp": 103,
+          "opponent_hp": -1,
+          "native_frames": 1659
+        }
+      }
+    ],
+    "exact_bout_count": 7,
+    "terminal_only_count": 2,
+    "untested_mapping_scope": "重跑输入已保留",
+    "raw_ko_hp": "终局数据保留模拟器的有符号血量，-1 是本次样本中的原始 KO 值。"
+  },
+  "delivery": {
+    "github_r2_outer": "models/championship_1243/Group_10.zip",
+    "github_r2_receipt": "reports/championship_1243/receipt.json",
+    "windows_local_runtime": "models/ryu_p1_pressure/policy.zip",
+    "missing_mac_material": [
+      "Kaggle／TA 最终外层 Group_10.zip 原件",
+      "与该原件相配套的提交或验收回执"
+    ]
+  }
+}

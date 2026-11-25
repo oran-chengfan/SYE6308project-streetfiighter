@@ -1,12 +1,17 @@
 # Counter-Ryu · SYE6308
 
-## Championship 提交
+## 比赛交付与复跑
 
-**首选 1243 分 Ryu。** 正式比赛只提交这一份完整外层 ZIP。同一份权重参加四场 PvE 资格赛和换边 PvP。在课程 Arena 中，将下载好的文件路径填入 `SUBMISSION_A`。[下载 Group_10.zip](models/championship_1243/Group_10.zip)
+| 版本 | 归档用途 | 入口 |
+| --- | --- | --- |
+| **1243 分 Ryu** | 比赛模型。GitHub 保存经 Mac Public Practice Arena R2 四局自检的外层包 | [R2 Group_10.zip](models/championship_1243/Group_10.zip) · [R2 回执](reports/championship_1243/receipt.json) |
+| **F，1136 分** | 比赛备用、历史强度基线、Notebook 默认模型 | [本地推理 zip](models/competition_delivery/group10_Ryu.zip) · [交付结果](reports/competition_delivery/summary.json) |
+| **冻结 B，1136 分** | 1243 分模型的直接比较基线 | [冻结 B 的权重和实验结果](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-competition-final) |
+| **1141 分走位模型** | 研究主动调位的收益、反例和整局代价 | [推理目录](models/retained_to_f/runtime) · [逐局结果](reports/retained_to_f/games.json) |
 
-资格赛四场均 KO，春丽二星和 Ryu 二、四、八星分别剩 176、176、84、103 血，共 1243 分。冻结后的换边 PvP 为 18/20（P1 8/10，P2 10/10）。这份 ZIP 已在 Mac 通过课程 Public Practice Arena R2 四局自检。打包前后 3,696 次动作选择逐一相同，四局终局血量和结束原因均一致。[Arena 回执](reports/championship_1243/receipt.json) · [动作核对](reports/championship_1243/action_replay.json) · [Windows 选型报告](https://github.com/oran-chengfan/SYE6308project-streetfiighter/blob/win/ryu-p1-pressure/reports/ryu_p1_pressure/summary.json)
+1243 分模型四场资格赛均 KO。春丽二星和 Ryu 二、四、八星分别剩 176、176、84、103 血。冻结换边 PvP 为 18/20（P1 8/10，P2 10/10）。Mac 的 R2 记录核对了打包前后 3,696 次动作选择及四场终局。Kaggle／TA 最终外层原件及对应回执待 Mac 补交。 [动作核对](reports/championship_1243/action_replay.json) · [Windows 选型报告](https://github.com/oran-chengfan/SYE6308project-streetfiighter/blob/win/ryu-p1-pressure/reports/ryu_p1_pressure/summary.json)
 
-**备用为 11 月 19 日冻结的 B**（1136 分，四场 KO）。若改用备用，取 Mac 项目 `6308_project` 中已经通过 R2 四局自检的完整文件 `artifacts/arena_frozen_B_20261120/submissions/Group_10_20261120T133215_509448Z_submission.zip`。这份备用外层包保存在 Mac；Windows 分支提供冻结权重和训练记录。[冻结 B 的来源](https://github.com/oran-chengfan/SYE6308project-streetfiighter/tree/win/ryu-competition-final)
+复跑优先使用已配置的 1117 Notebook。赛后索引收录课程 PPO、F、走位师生、B 和 1243 的谱系，也列出了失败实验与 Windows 独有的恢复输入。 [运行 Notebook](notebooks/working/sye6308_group10_1117.ipynb) · [探索与复跑索引](reports/post_competition_index.md) · [赛后验证记录](reports/post_competition_checks.json)
 
 ## Notebook 演示与续训
 
@@ -31,7 +36,7 @@
 
 四场资格赛录像：[春丽2星](reports/competition_delivery/F_qualification_ChunLi_2.mp4)、[Ryu2星](reports/competition_delivery/F_qualification_Ryu_2.mp4)、[Ryu4星](reports/competition_delivery/F_qualification_Ryu_4.mp4)、[Ryu8星](reports/competition_delivery/F_qualification_Ryu_8.mp4)。自身剩血依次为154、176、84、18；四场均在计时结束前 KO。
 
-F 的单 ZIP 用于本地推理；主线的课程 R2 比赛提交包见页首。
+F 的便携 ZIP 用于本地推理。课程 R2 外层包见页首。
 
 ## 1141 分走位研究模型与完整对局
 
